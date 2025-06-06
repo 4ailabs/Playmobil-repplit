@@ -54,10 +54,11 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🗑️ Eliminar:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2">🗑️ Eliminar (Compatible Mac):</h4>
           <p className="text-gray-700">
-            • Clic derecho en un muñeco para eliminarlo<br/>
-            • Útil para ajustar la constelación durante la sesión
+            • Haz clic en un muñeco para seleccionarlo (aro rojo)<br/>
+            • Presiona Delete o Backspace para eliminarlo<br/>
+            • Funciona en Mac, PC y todos los sistemas
           </p>
         </div>
 

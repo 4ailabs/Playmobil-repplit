@@ -54,14 +54,20 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
     }
   };
 
-  const handleRightClick = (event: any) => {
-    if (isPlaced) {
-      event.stopPropagation();
-      event.preventDefault();
-      console.log('Eliminando muñeco:', doll.dollType.name);
-      removeDoll(doll.id);
-    }
-  };
+  // Global keyboard listener for Delete/Backspace
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedDollId === doll.id) {
+        event.preventDefault();
+        console.log('Eliminando muñeco seleccionado:', doll.dollType.name);
+        removeDoll(doll.id);
+        setSelectedDollId(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedDollId, doll.id, removeDoll, setSelectedDollId, doll.dollType.name]);
 
   const dollColor = hovered ? 
     new THREE.Color(doll.dollType.color).multiplyScalar(1.2) : 
@@ -94,7 +100,6 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         onDoubleClick={handleDoubleClick}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onContextMenu={handleRightClick}
       >
         {/* Render different geometric shapes */}
         {doll.dollType.id === 'circle-concept' && (
@@ -155,7 +160,6 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
       onDoubleClick={handleDoubleClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
-      onContextMenu={handleRightClick}
     >
       {/* Body (cylinder) - different sizes for different ages */}
       <mesh position={[0, 0.2, 0]} castShadow>
@@ -206,10 +210,14 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
       )}
 
       {/* Selection indicator */}
-      {hovered && (
+      {(hovered || selectedDollId === doll.id) && (
         <mesh position={[0, -0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.3, 0.35, 16]} />
-          <meshBasicMaterial color="#3B82F6" transparent opacity={0.7} />
+          <meshBasicMaterial 
+            color={selectedDollId === doll.id ? "#FF4444" : "#3B82F6"} 
+            transparent 
+            opacity={selectedDollId === doll.id ? 0.9 : 0.7} 
+          />
         </mesh>
       )}
     </group>
