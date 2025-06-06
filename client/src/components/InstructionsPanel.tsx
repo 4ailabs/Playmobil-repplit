@@ -64,6 +64,16 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
+          <h4 className="font-semibold text-blue-800 mb-2">🖥️ Pantalla Completa:</h4>
+          <p className="text-gray-700">
+            • Botón azul en esquina superior derecha<br/>
+            • Oculta todas las barras laterales<br/>
+            • Enfoque total en la sesión de terapia<br/>
+            • Ideal para presentaciones con pacientes
+          </p>
+        </div>
+
+        <div>
           <h4 className="font-semibold text-blue-800 mb-2">🧭 Caminos de Vida:</h4>
           <p className="text-gray-700">
             • <strong>N:</strong> Migrante - Búsqueda y exploración<br/>
