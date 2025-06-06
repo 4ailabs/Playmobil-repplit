@@ -23,8 +23,8 @@ export default function Table3D() {
       
       console.log('Posición de colocación:', point);
       
-      // Check if position is within table bounds (rectangular)
-      if (Math.abs(point.x) <= 4 && Math.abs(point.z) <= 3) {
+      // Check if position is within table bounds (rectangular: 6 wide x 8 deep)
+      if (Math.abs(point.x) <= 3 && Math.abs(point.z) <= 4) {
         const newDoll = {
           ...draggedDoll,
           id: `placed-${Date.now()}`,
@@ -53,32 +53,32 @@ export default function Table3D() {
         receiveShadow
         castShadow
       >
-        <planeGeometry args={[8, 6]} />
-        <meshStandardMaterial color="#87CEEB" />
+        <planeGeometry args={[6, 8]} />
+        <meshLambertMaterial color="#FFFFFF" />
       </mesh>
       
       {/* Table base/support */}
       <mesh position={[0, -0.1, 0]}>
-        <boxGeometry args={[8.2, 0.2, 6.2]} />
-        <meshStandardMaterial color="#5A5A5A" />
+        <boxGeometry args={[6.2, 0.2, 8.2]} />
+        <meshLambertMaterial color="#E5E5E5" />
       </mesh>
 
       {/* Table legs */}
       {[
-        [-3.5, -1, -2.5] as [number, number, number],
-        [3.5, -1, -2.5] as [number, number, number], 
-        [-3.5, -1, 2.5] as [number, number, number],
-        [3.5, -1, 2.5] as [number, number, number]
+        [-2.5, -1, -3.5] as [number, number, number],
+        [2.5, -1, -3.5] as [number, number, number], 
+        [-2.5, -1, 3.5] as [number, number, number],
+        [2.5, -1, 3.5] as [number, number, number]
       ].map((position, index) => (
         <mesh key={index} position={position} castShadow>
           <cylinderGeometry args={[0.15, 0.15, 2]} />
-          <meshStandardMaterial color="#404040" />
+          <meshLambertMaterial color="#CCCCCC" />
         </mesh>
       ))}
 
-      {/* Cardinal direction labels - matching your image layout */}
+      {/* Cardinal direction labels - Norte/Sur en lados cortos */}
       <Text
-        position={[0, 0.02, -2.3]}
+        position={[0, 0.02, -3.8]}
         rotation={[-Math.PI / 2, 0, 0]}
         fontSize={0.6}
         color="black"
@@ -90,7 +90,7 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[0, 0.02, 2.3]}
+        position={[0, 0.02, 3.8]}
         rotation={[-Math.PI / 2, 0, 0]}
         fontSize={0.6}
         color="black"
@@ -102,7 +102,7 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[3.2, 0.02, 0]}
+        position={[2.8, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         fontSize={0.6}
         color="black"
@@ -114,7 +114,7 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[-3.2, 0.02, 0]}
+        position={[-2.8, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         fontSize={0.6}
         color="black"
@@ -127,14 +127,8 @@ export default function Table3D() {
 
       {/* Center reference point */}
       <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.3, 16]} />
-        <meshBasicMaterial color="#FFFFFF" transparent opacity={0.3} />
-      </mesh>
-
-      {/* Subtle border lines to define cardinal areas */}
-      <mesh position={[0, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0, 4, 4, 1, 0, Math.PI * 2]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.1} />
+        <circleGeometry args={[0.2, 16]} />
+        <meshBasicMaterial color="#DDDDDD" transparent opacity={0.4} />
       </mesh>
     </group>
   );

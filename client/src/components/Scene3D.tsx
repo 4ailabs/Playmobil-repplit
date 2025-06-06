@@ -19,11 +19,11 @@ export default function Scene3D() {
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.4} />
+      {/* Lighting - Reduced intensity for white table */}
+      <ambientLight intensity={0.6} />
       <directionalLight
         position={[10, 10, 5]}
-        intensity={1}
+        intensity={0.5}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -33,7 +33,7 @@ export default function Scene3D() {
         shadow-camera-top={10}
         shadow-camera-bottom={-10}
       />
-      <pointLight position={[-10, 5, -5]} intensity={0.3} />
+      <pointLight position={[-10, 5, -5]} intensity={0.2} />
 
       {/* Environment */}
       <Environment preset="city" />
