@@ -60,42 +60,57 @@ export const useGame = create<GameState>()(
     currentHint: null,
     
     // Actions
-    addDoll: (doll: PlacedDoll) => {
-      set((state) => ({
-        placedDolls: [...state.placedDolls, doll]
-      }));
+    addBuilding: (building: PlacedBuilding) => {
+      const { canAffordBuilding, updateResources } = get();
+      if (canAffordBuilding(building.buildingType)) {
+        set((state) => ({
+          placedBuildings: [...state.placedBuildings, building],
+          population: state.population + building.buildingType.populationCapacity,
+          sustainabilityScore: state.sustainabilityScore + building.buildingType.sustainabilityBonus
+        }));
+        updateResources();
+      }
     },
     
-    removeDoll: (dollId: string) => {
-      set((state) => ({
-        placedDolls: state.placedDolls.filter(doll => doll.id !== dollId)
-      }));
+    removeBuilding: (buildingId: string) => {
+      set((state) => {
+        const building = state.placedBuildings.find(b => b.id === buildingId);
+        return {
+          placedBuildings: state.placedBuildings.filter(b => b.id !== buildingId),
+          population: building ? state.population - building.buildingType.populationCapacity : state.population,
+          sustainabilityScore: building ? state.sustainabilityScore - building.buildingType.sustainabilityBonus : state.sustainabilityScore
+        };
+      });
     },
     
-    updateDollPosition: (dollId: string, position: [number, number, number]) => {
+    updateBuildingPosition: (buildingId: string, position: [number, number, number]) => {
       set((state) => ({
-        placedDolls: state.placedDolls.map(doll => 
-          doll.id === dollId ? { ...doll, position } : doll
+        placedBuildings: state.placedBuildings.map(building => 
+          building.id === buildingId ? { ...building, position } : building
         )
       }));
     },
     
-    setDraggedDoll: (doll: PlacedDoll | null) => {
-      set({ draggedDoll: doll });
+    setDraggedBuilding: (building: PlacedBuilding | null) => {
+      set({ draggedBuilding: building });
     },
     
     setIsDragging: (isDragging: boolean) => {
       set({ isDragging });
     },
     
-    clearTable: () => {
-      set({ placedDolls: [] });
+    clearSettlement: () => {
+      set({ 
+        placedBuildings: [],
+        population: 0,
+        sustainabilityScore: 100,
+        resources: { wood: 10, stone: 8, clay: 6, food: 5, water: 10, flour: 0 }
+      });
     },
     
-    setSelectedScenario: (scenario: TherapyScenario) => {
-      set({ selectedScenario: scenario });
-      // Clear table when changing scenarios
-      get().clearTable();
+    setSelectedEra: (era: HistoricalEra) => {
+      set({ selectedEra: era });
+      get().clearSettlement();
     },
     
     toggleInfoPanel: () => {
@@ -103,30 +118,66 @@ export const useGame = create<GameState>()(
         isInfoPanelOpen: !state.isInfoPanelOpen
       }));
     },
+
+    toggleHints: () => {
+      set((state) => ({
+        showHints: !state.showHints
+      }));
+    },
+
+    updateResources: () => {
+      set((state) => {
+        const newResources = { ...state.resources };
+        
+        // Deduct building costs and add production
+        state.placedBuildings.forEach(building => {
+          // Deduct costs (one-time when built, tracked elsewhere)
+          // Add production
+          Object.entries(building.buildingType.resourceProduction).forEach(([resource, amount]) => {
+            newResources[resource] = (newResources[resource] || 0) + amount;
+          });
+        });
+        
+        return { resources: newResources };
+      });
+    },
+
+    canAffordBuilding: (buildingType: BuildingType) => {
+      const { resources } = get();
+      return Object.entries(buildingType.resourceCost).every(([resource, cost]) => {
+        return (resources[resource] || 0) >= cost;
+      });
+    },
     
     saveConfiguration: (name: string) => {
-      const { placedDolls, selectedScenario, savedConfigurations } = get();
+      const { placedBuildings, selectedEra, savedConfigurations, resources, population, sustainabilityScore } = get();
       const newConfig: SavedConfiguration = {
         id: `config-${Date.now()}`,
         name,
-        dolls: placedDolls,
-        scenario: selectedScenario.id,
-        timestamp: Date.now()
+        buildings: placedBuildings,
+        era: selectedEra.id,
+        timestamp: Date.now(),
+        resources,
+        population,
+        sustainabilityScore
       };
       
       const updatedConfigs = [...savedConfigurations, newConfig];
       set({ savedConfigurations: updatedConfigs });
-      setLocalStorage('therapy-configurations', updatedConfigs);
+      setLocalStorage('game-configurations', updatedConfigs);
     },
     
     loadConfiguration: (configId: string) => {
       const { savedConfigurations } = get();
       const config = savedConfigurations.find(c => c.id === configId);
       if (config) {
-        const scenario = THERAPY_SCENARIOS.find(s => s.id === config.scenario) || THERAPY_SCENARIOS[0];
+        const era = HISTORICAL_ERAS.find(e => e.id === config.era) || HISTORICAL_ERAS[0];
         set({
-          placedDolls: config.dolls,
-          selectedScenario: scenario
+          placedBuildings: config.buildings,
+          selectedEra: era,
+          resources: config.resources,
+          population: config.population,
+          sustainabilityScore: config.sustainabilityScore
         });
       }
     },
@@ -135,29 +186,65 @@ export const useGame = create<GameState>()(
       const { savedConfigurations } = get();
       const updatedConfigs = savedConfigurations.filter(c => c.id !== configId);
       set({ savedConfigurations: updatedConfigs });
-      setLocalStorage('therapy-configurations', updatedConfigs);
+      setLocalStorage('game-configurations', updatedConfigs);
     },
     
     initializeFromStorage: () => {
-      const savedConfigs = getLocalStorage('therapy-configurations') || [];
+      const savedConfigs = getLocalStorage('game-configurations') || [];
       set({ savedConfigurations: savedConfigs });
     },
     
     // Computed functions
-    dollCount: () => {
-      return get().placedDolls.length;
+    buildingCount: () => {
+      return get().placedBuildings.length;
     },
     
     getAnalysis: () => {
-      const count = get().dollCount();
-      if (count === 0) return "Mesa vacía - listo para comenzar";
-      if (count === 1) return "Configuración individual - exploración personal";
-      if (count === 2) return "Relación dual - dinámicas de pareja";
-      if (count <= 4) return "Grupo pequeño - dinámicas familiares básicas";
-      return "Sistema complejo - múltiples relaciones e interacciones";
+      const { buildingCount, population, sustainabilityScore } = get();
+      const count = buildingCount();
+      if (count === 0) return "Empty settlement - ready to begin building";
+      if (sustainabilityScore > 80) return `Thriving eco-community with ${population} residents`;
+      if (sustainabilityScore > 60) return `Growing settlement with ${population} residents - good sustainability`;
+      if (sustainabilityScore > 40) return `Developing community with ${population} residents - needs improvement`;
+      return `Settlement with ${population} residents - sustainability at risk`;
+    },
+
+    getHint: () => {
+      const { placedBuildings, selectedEra, resources, sustainabilityScore } = get();
+      const count = placedBuildings.length;
+      
+      if (count === 0) {
+        return "Start by placing basic housing like a Mud Hut to shelter your first residents";
+      }
+      
+      const hasHousing = placedBuildings.some(b => b.buildingType.category === 'housing');
+      const hasProduction = placedBuildings.some(b => b.buildingType.category === 'production');
+      const hasInfrastructure = placedBuildings.some(b => b.buildingType.category === 'infrastructure');
+      
+      if (!hasHousing) {
+        return "You need housing to accommodate residents. Try building a Mud Hut or Stone House";
+      }
+      
+      if (!hasProduction && resources.food < 3) {
+        return "Food is running low! Build a Farm Plot to ensure your community doesn't go hungry";
+      }
+      
+      if (!hasInfrastructure && count > 2) {
+        return "Your settlement needs infrastructure. Consider building a Well for clean water access";
+      }
+      
+      if (sustainabilityScore < 60) {
+        return "Your sustainability score is declining. Focus on buildings with high sustainability bonuses";
+      }
+      
+      if (count >= 5) {
+        return "Great progress! Try adding cultural buildings like a Temple or Learning Hall for community wellbeing";
+      }
+      
+      return "Your settlement is developing well. Continue expanding based on your era's available buildings";
     }
   }))
 );
 
 // Initialize from storage on app start
-useTherapy.getState().initializeFromStorage();
+useGame.getState().initializeFromStorage();

@@ -1,12 +1,12 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import "@fontsource/inter";
-import TherapyApp from "./components/TherapyApp";
+import GameApp from "./components/GameApp";
 
 function App() {
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-slate-100 overflow-hidden">
-      <TherapyApp />
+    <div className="w-full h-screen bg-gradient-to-br from-green-50 to-blue-100 overflow-hidden">
+      <GameApp />
     </div>
   );
 }
