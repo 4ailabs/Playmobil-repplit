@@ -4,6 +4,7 @@ import Scene3D from "./Scene3D";
 import DollLibrary from "./DollLibrary";
 import LifePathsPanel from "./LifePathsPanel";
 import InfoPanel from "./InfoPanel";
+import InstructionsPanel from "./InstructionsPanel";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 
 export default function TherapyApp() {
@@ -60,6 +61,9 @@ export default function TherapyApp() {
 
       {/* Bottom Info Panel */}
       <InfoPanel />
+      
+      {/* Instructions Panel */}
+      <InstructionsPanel />
     </div>
   );
 }
