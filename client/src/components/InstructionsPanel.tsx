@@ -36,11 +36,12 @@ export default function InstructionsPanel() {
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">📍 Colocar Muñecos:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2">🎲 Colocación Aleatoria:</h4>
           <p className="text-gray-700">
             • Selecciona un familiar de la biblioteca<br/>
-            • Haz clic en la mesa blanca para colocarlo<br/>
-            • Los muñecos caen donde haces clic para análisis espontáneo
+            • ¡El muñeco cae automáticamente al azar en la mesa!<br/>
+            • Posición y dirección espontáneas revelan dinámicas inconscientes<br/>
+            • Metodología auténtica de constelaciones familiares
           </p>
         </div>
 
@@ -73,11 +74,13 @@ export default function InstructionsPanel() {
         </div>
 
         <div className="bg-blue-50 p-3 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-1">💡 Metodología:</h4>
+          <h4 className="font-semibold text-blue-800 mb-1">💡 Metodología Auténtica:</h4>
           <p className="text-xs text-blue-700">
-            Observa dónde caen naturalmente los muñecos, hacia dónde miran, 
-            y en qué camino de vida se posicionan para revelar dinámicas 
-            familiares inconscientes.
+            La colocación aleatoria automática simula el proceso intuitivo 
+            de las constelaciones familiares. Cada posición, dirección y 
+            camino de vida revelados espontáneamente reflejan el inconsciente 
+            familiar sistémico. Analiza las distancias, orientaciones y 
+            agrupaciones para comprender las dinámicas relacionales.
           </p>
         </div>
       </CardContent>

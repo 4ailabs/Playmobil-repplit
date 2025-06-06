@@ -5,20 +5,54 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 
 export default function DollLibrary() {
-  const { setDraggedDoll, draggedDoll } = useTherapy();
+  const { setDraggedDoll, draggedDoll, addDoll, dropDoll } = useTherapy();
   const [hoveredDoll, setHoveredDoll] = useState<string | null>(null);
 
+  const generateRandomPosition = (): [number, number, number] => {
+    // Random position within table bounds (8 wide x 10 deep)
+    const x = (Math.random() - 0.5) * 7; // -3.5 to 3.5
+    const z = (Math.random() - 0.5) * 9; // -4.5 to 4.5
+    const y = 0.16; // Fixed height above table
+    return [x, y, z];
+  };
+
+  const generateRandomRotation = (): [number, number, number] => {
+    // Random Y rotation to show different directions
+    const yRotation = Math.random() * Math.PI * 2; // 0 to 2π
+    return [0, yRotation, 0];
+  };
+
+  const getLifePathForPosition = (position: [number, number, number]): 'north' | 'south' | 'east' | 'west' | null => {
+    const [x, , z] = position;
+    
+    // Check if position is in any cardinal direction zone
+    if (Math.abs(z) > Math.abs(x)) {
+      // North/South zones (top/bottom of table)
+      return z < 0 ? 'north' : 'south';
+    } else if (Math.abs(x) > 2) {
+      // East/West zones (left/right of table)  
+      return x > 0 ? 'east' : 'west';
+    }
+    
+    return null; // Center area
+  };
+
   const handleDollSelect = (dollType: any) => {
+    const randomPosition = generateRandomPosition();
+    const randomRotation = generateRandomRotation();
+    
     const newDoll = {
-      id: `temp-${Date.now()}`,
+      id: `placed-${Date.now()}`,
       dollType,
-      position: [0, 0.4, 0] as [number, number, number],
-      rotation: [0, 0, 0] as [number, number, number],
-      lifePath: null as 'north' | 'south' | 'east' | 'west' | null,
-      isDropped: false
+      position: randomPosition,
+      rotation: randomRotation,
+      lifePath: getLifePathForPosition(randomPosition),
+      isDropped: true
     };
-    setDraggedDoll(newDoll);
-    console.log('Muñeco seleccionado para arrastrar:', dollType.name);
+    
+    console.log('Muñeco colocado al azar:', dollType.name, 'Posición:', randomPosition, 'Camino:', newDoll.lifePath);
+    addDoll(newDoll);
+    dropDoll(newDoll.id, randomPosition);
   };
 
   // All doll types are now selectable for complete family constellations
