@@ -39,6 +39,8 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
   const handleRightClick = (event: any) => {
     if (isPlaced) {
       event.stopPropagation();
+      event.preventDefault();
+      console.log('Eliminando muñeco:', doll.dollType.name);
       removeDoll(doll.id);
     }
   };
@@ -165,6 +167,23 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         <cylinderGeometry args={[0.05, 0.05, 0.3, 6]} />
         <meshStandardMaterial color={dollColor} roughness={0.7} />
       </mesh>
+
+      {/* Direction indicator - shows where the doll is facing */}
+      {isPlaced && (
+        <>
+          {/* Direction arrow */}
+          <mesh position={[0, 0.8, 0.15]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+            <coneGeometry args={[0.05, 0.15, 3]} />
+            <meshBasicMaterial color="#FF6B6B" />
+          </mesh>
+          
+          {/* Direction line */}
+          <mesh position={[0, 0.8, 0.08]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.02, 0.02, 0.15, 6]} />
+            <meshBasicMaterial color="#FF6B6B" />
+          </mesh>
+        </>
+      )}
 
       {/* Selection indicator */}
       {hovered && (

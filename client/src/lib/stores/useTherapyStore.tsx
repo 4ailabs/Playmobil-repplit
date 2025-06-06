@@ -18,6 +18,7 @@ interface TherapyState {
   addDoll: (doll: PlacedDoll) => void;
   removeDoll: (dollId: string) => void;
   updateDollPosition: (dollId: string, position: [number, number, number]) => void;
+  updateDollRotation: (dollId: string, rotation: [number, number, number]) => void;
   setDraggedDoll: (doll: PlacedDoll | null) => void;
   setIsDragging: (isDragging: boolean) => void;
   clearTable: () => void;
@@ -62,6 +63,14 @@ export const useTherapy = create<TherapyState>()(
       set((state) => ({
         placedDolls: state.placedDolls.map(doll => 
           doll.id === dollId ? { ...doll, position } : doll
+        )
+      }));
+    },
+
+    updateDollRotation: (dollId: string, rotation: [number, number, number]) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll => 
+          doll.id === dollId ? { ...doll, rotation } : doll
         )
       }));
     },
