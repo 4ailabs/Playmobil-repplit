@@ -1,111 +1,201 @@
-export interface BuildingType {
+export interface DollType {
   id: string;
   name: string;
   color: string;
   description: string;
-  category: 'housing' | 'production' | 'infrastructure' | 'culture';
-  resourceCost: Record<string, number>;
-  resourceProduction: Record<string, number>;
-  populationCapacity: number;
-  sustainabilityBonus: number;
+  category: 'self' | 'father' | 'mother' | 'grandfather' | 'grandmother' | 'partner' | 'child' | 'sibling' | 'other';
 }
 
-export interface PlacedBuilding {
+export interface PlacedDoll {
   id: string;
-  buildingType: BuildingType;
+  dollType: DollType;
   position: [number, number, number];
   rotation: [number, number, number];
-  level: number;
-  efficiency: number;
+  lifePath: 'north' | 'south' | 'east' | 'west' | null;
+  isDropped: boolean;
 }
 
-export interface HistoricalEra {
-  id: string;
+export interface LifePath {
+  id: 'north' | 'south' | 'east' | 'west';
   name: string;
   description: string;
-  category: string;
-  availableBuildings: string[];
-  challengeDescription: string;
-  sustainabilityGoals: string[];
+  characteristics: string[];
+  benefits: string[];
+  risks: string[];
+  motivations: string[];
+  fears: string[];
+  color: string;
 }
 
 export interface SavedConfiguration {
   id: string;
   name: string;
-  buildings: PlacedBuilding[];
-  era: string;
+  dolls: PlacedDoll[];
+  scenario: string;
   timestamp: number;
-  resources: Record<string, number>;
-  population: number;
-  sustainabilityScore: number;
+  analysis: string;
 }
 
-export const BUILDING_TYPES: BuildingType[] = [
-  // Housing
-  { id: 'mud-hut', name: 'Mud Hut', color: '#8B4513', description: 'Basic sustainable housing using local materials', category: 'housing', resourceCost: { wood: 2, clay: 3 }, resourceProduction: {}, populationCapacity: 4, sustainabilityBonus: 3 },
-  { id: 'stone-house', name: 'Stone House', color: '#708090', description: 'Durable stone construction with good insulation', category: 'housing', resourceCost: { stone: 4, wood: 2 }, resourceProduction: {}, populationCapacity: 6, sustainabilityBonus: 2 },
-  { id: 'timber-frame', name: 'Timber Frame', color: '#DEB887', description: 'Efficient wood construction with renewable materials', category: 'housing', resourceCost: { wood: 5, clay: 1 }, resourceProduction: {}, populationCapacity: 8, sustainabilityBonus: 4 },
-  
-  // Production
-  { id: 'farm-plot', name: 'Farm Plot', color: '#228B22', description: 'Sustainable agriculture producing food', category: 'production', resourceCost: { wood: 1 }, resourceProduction: { food: 3 }, populationCapacity: 0, sustainabilityBonus: 5 },
-  { id: 'lumber-mill', name: 'Lumber Mill', color: '#654321', description: 'Processes wood while managing forest resources', category: 'production', resourceCost: { stone: 3, wood: 2 }, resourceProduction: { wood: 2 }, populationCapacity: 0, sustainabilityBonus: 2 },
-  { id: 'quarry', name: 'Stone Quarry', color: '#A9A9A9', description: 'Extracts stone with minimal environmental impact', category: 'production', resourceCost: { wood: 2 }, resourceProduction: { stone: 2 }, populationCapacity: 0, sustainabilityBonus: 1 },
-  { id: 'pottery-kiln', name: 'Pottery Kiln', color: '#CD853F', description: 'Creates clay goods using efficient firing techniques', category: 'production', resourceCost: { stone: 2, wood: 1 }, resourceProduction: { clay: 2 }, populationCapacity: 0, sustainabilityBonus: 3 },
-  
-  // Infrastructure  
-  { id: 'well', name: 'Community Well', color: '#4682B4', description: 'Provides clean water access for the community', category: 'infrastructure', resourceCost: { stone: 3 }, resourceProduction: { water: 4 }, populationCapacity: 0, sustainabilityBonus: 4 },
-  { id: 'granary', name: 'Granary', color: '#DAA520', description: 'Stores food with pest-resistant design', category: 'infrastructure', resourceCost: { wood: 4, stone: 2 }, resourceProduction: {}, populationCapacity: 0, sustainabilityBonus: 3 },
-  { id: 'windmill', name: 'Windmill', color: '#F5DEB3', description: 'Harnesses wind power for grain processing', category: 'infrastructure', resourceCost: { wood: 6, stone: 2 }, resourceProduction: { flour: 2 }, populationCapacity: 0, sustainabilityBonus: 5 },
-  
-  // Culture
-  { id: 'temple', name: 'Sacred Temple', color: '#9370DB', description: 'Community gathering place with natural materials', category: 'culture', resourceCost: { stone: 8, wood: 4 }, resourceProduction: {}, populationCapacity: 0, sustainabilityBonus: 4 },
-  { id: 'school', name: 'Learning Hall', color: '#FF6347', description: 'Education center teaching sustainable practices', category: 'culture', resourceCost: { wood: 5, stone: 3 }, resourceProduction: {}, populationCapacity: 0, sustainabilityBonus: 5 }
+export const DOLL_TYPES: DollType[] = [
+  { id: 'self', name: 'Yo/Myself', color: '#4F46E5', description: 'Representa a la persona en terapia', category: 'self' },
+  { id: 'father', name: 'Padre', color: '#1E40AF', description: 'Figura paterna', category: 'father' },
+  { id: 'mother', name: 'Madre', color: '#EC4899', description: 'Figura materna', category: 'mother' },
+  { id: 'grandfather-p', name: 'Abuelo Paterno', color: '#6B7280', description: 'Abuelo de línea paterna', category: 'grandfather' },
+  { id: 'grandmother-p', name: 'Abuela Paterna', color: '#9CA3AF', description: 'Abuela de línea paterna', category: 'grandmother' },
+  { id: 'grandfather-m', name: 'Abuelo Materno', color: '#374151', description: 'Abuelo de línea materna', category: 'grandfather' },
+  { id: 'grandmother-m', name: 'Abuela Materna', color: '#6B7280', description: 'Abuela de línea materna', category: 'grandmother' },
+  { id: 'partner', name: 'Pareja', color: '#DC2626', description: 'Pareja actual o significativa', category: 'partner' },
+  { id: 'child-1', name: 'Hijo/a Mayor', color: '#10B981', description: 'Primer hijo/a', category: 'child' },
+  { id: 'child-2', name: 'Hijo/a 2', color: '#34D399', description: 'Segundo hijo/a', category: 'child' },
+  { id: 'sibling-1', name: 'Hermano/a Mayor', color: '#3B82F6', description: 'Hermano/a mayor', category: 'sibling' },
+  { id: 'sibling-2', name: 'Hermano/a Menor', color: '#60A5FA', description: 'Hermano/a menor', category: 'sibling' },
+  { id: 'other-1', name: 'Otro Familiar', color: '#F59E0B', description: 'Otra figura significativa', category: 'other' },
+  { id: 'other-2', name: 'Figura Importante', color: '#7C3AED', description: 'Otra persona importante', category: 'other' }
 ];
 
-export const HISTORICAL_ERAS: HistoricalEra[] = [
+export const LIFE_PATHS: LifePath[] = [
   {
-    id: 'neolithic',
-    name: 'Neolithic Settlement',
-    description: 'Build the first agricultural communities using sustainable farming and natural materials',
-    category: 'prehistoric',
-    availableBuildings: ['mud-hut', 'farm-plot', 'well', 'pottery-kiln'],
-    challengeDescription: 'Establish a self-sufficient village with renewable resources',
-    sustainabilityGoals: ['Use only renewable materials', 'Maintain soil fertility', 'Conserve water sources']
+    id: 'north',
+    name: 'El Camino del Migrante (Norte)',
+    description: 'Representa la búsqueda de lo nuevo, la exploración y la aventura. Un trayecto marcado por la incertidumbre pero también por la esperanza.',
+    characteristics: [
+      'Incertidumbre y falta de referencias claras',
+      'Implica riesgo y desconocimiento',
+      'Refleja un deseo de cambio o escape',
+      'Adaptabilidad y resiliencia requeridas'
+    ],
+    benefits: [
+      'Oportunidades de crecimiento personal',
+      'Innovación y creatividad',
+      'Desarrollo de nuevas habilidades',
+      'Expansión de perspectivas'
+    ],
+    risks: [
+      'Sensación de pérdida y desorientación',
+      'Ansiedad e inseguridad',
+      'Aislamiento y soledad',
+      'Desconexión de redes de apoyo'
+    ],
+    motivations: [
+      'Deseo de cambio y renovación',
+      'Exploración y aventura',
+      'Escape de situaciones insatisfactorias',
+      'Búsqueda de nuevas oportunidades'
+    ],
+    fears: [
+      'Temor a lo desconocido',
+      'Miedo al fracaso',
+      'Inseguridad sobre capacidades',
+      'Temor a no encontrar lo buscado'
+    ],
+    color: '#3B82F6'
   },
   {
-    id: 'bronze-age',
-    name: 'Bronze Age Town',
-    description: 'Develop trade networks while managing resource extraction responsibly',
-    category: 'ancient',
-    availableBuildings: ['stone-house', 'lumber-mill', 'quarry', 'granary', 'temple'],
-    challengeDescription: 'Balance economic growth with environmental stewardship',
-    sustainabilityGoals: ['Implement crop rotation', 'Prevent deforestation', 'Build lasting infrastructure']
+    id: 'south',
+    name: 'El Camino del Sufrimiento (Sur)',
+    description: 'Representa un lugar de conflicto donde predomina el sufrimiento, el miedo y la reactividad. Caracterizado por la necesidad de sobrevivir.',
+    characteristics: [
+      'Reactividad y supervivencia constante',
+      'Estado de alerta permanente',
+      'Refleja situaciones de lucha y dolor',
+      'Patrones de comportamiento defensivos'
+    ],
+    benefits: [
+      'Desarrollo de resistencia',
+      'Fortalecimiento del carácter',
+      'Aprendizaje profundo',
+      'Capacidad de superación'
+    ],
+    risks: [
+      'Trauma y estrés crónico',
+      'Patrones autodestructivos',
+      'Aislamiento emocional',
+      'Perpetuación del sufrimiento'
+    ],
+    motivations: [
+      'Supervivencia y protección',
+      'Escape del dolor',
+      'Búsqueda de seguridad',
+      'Necesidad de control'
+    ],
+    fears: [
+      'Miedo a ser herido nuevamente',
+      'Temor a la vulnerabilidad',
+      'Pánico al abandono',
+      'Terror a la repetición del trauma'
+    ],
+    color: '#DC2626'
   },
   {
-    id: 'medieval',
-    name: 'Medieval Village',
-    description: 'Create a thriving community using traditional ecological knowledge',
-    category: 'medieval',
-    availableBuildings: ['timber-frame', 'windmill', 'school', 'granary', 'well'],
-    challengeDescription: 'Develop renewable energy and education systems',
-    sustainabilityGoals: ['Harness wind power', 'Educate about sustainability', 'Preserve local ecosystems']
+    id: 'west',
+    name: 'El Camino del Deber (Oeste)',
+    description: 'El camino de la misión y la responsabilidad. Individuos que sienten que deben cumplir con un deber impuesto o elegido.',
+    characteristics: [
+      'Fuerte sensación de obligación',
+      'Compromiso con responsabilidades',
+      'Vida estructurada por expectativas',
+      'Cumplimiento de roles heredados'
+    ],
+    benefits: [
+      'Sentido de propósito claro',
+      'Estabilidad y estructura',
+      'Reconocimiento social',
+      'Satisfacción del deber cumplido'
+    ],
+    risks: [
+      'Rigidez y falta de flexibilidad',
+      'Supresión de deseos personales',
+      'Resentimiento y frustración',
+      'Pérdida de autenticidad'
+    ],
+    motivations: [
+      'Cumplir expectativas familiares',
+      'Mantener tradiciones',
+      'Buscar aprobación',
+      'Servir a otros'
+    ],
+    fears: [
+      'Miedo a decepcionar',
+      'Temor al juicio',
+      'Pánico al cambio',
+      'Miedo a la irresponsabilidad'
+    ],
+    color: '#F59E0B'
   },
   {
-    id: 'indigenous',
-    name: 'Indigenous Community',
-    description: 'Build using traditional practices that work in harmony with nature',
-    category: 'traditional',
-    availableBuildings: ['mud-hut', 'farm-plot', 'well', 'temple', 'school'],
-    challengeDescription: 'Demonstrate time-tested sustainable living practices',
-    sustainabilityGoals: ['Live within ecological limits', 'Share resources equitably', 'Preserve cultural knowledge']
-  },
-  {
-    id: 'eco-village',
-    name: 'Modern Eco-Village',
-    description: 'Apply historical wisdom to create a model sustainable community',
-    category: 'modern',
-    availableBuildings: ['timber-frame', 'farm-plot', 'windmill', 'school', 'well', 'granary'],
-    challengeDescription: 'Combine ancient knowledge with modern efficiency',
-    sustainabilityGoals: ['Achieve carbon neutrality', 'Maximize biodiversity', 'Create circular economy']
+    id: 'east',
+    name: 'El Camino del Placer (Este)',
+    description: 'Representa el camino del gozo y la satisfacción. Un trayecto donde las necesidades están cubiertas y prevalece el disfrute.',
+    characteristics: [
+      'Abundancia y comodidad',
+      'Estabilidad material y emocional',
+      'Disfrute de la vida',
+      'Satisfacción de necesidades'
+    ],
+    benefits: [
+      'Bienestar y felicidad',
+      'Desarrollo de talentos',
+      'Relaciones satisfactorias',
+      'Crecimiento personal'
+    ],
+    risks: [
+      'Complacencia y estancamiento',
+      'Dependencia y falta de iniciativa',
+      'Riesgo de excesos',
+      'Desconexión de la realidad'
+    ],
+    motivations: [
+      'Búsqueda de felicidad',
+      'Mantener el confort',
+      'Disfrutar la vida',
+      'Evitar el sufrimiento'
+    ],
+    fears: [
+      'Miedo a perder lo conseguido',
+      'Temor al esfuerzo',
+      'Pánico a la escasez',
+      'Miedo a la responsabilidad'
+    ],
+    color: '#10B981'
   }
 ];

@@ -2,25 +2,23 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import Scene3D from "./Scene3D";
 import DollLibrary from "./DollLibrary";
-import ScenarioPanel from "./ScenarioPanel";
+import LifePathsPanel from "./LifePathsPanel";
 import InfoPanel from "./InfoPanel";
 import { useTherapy } from "../lib/stores/useTherapy";
 
 export default function TherapyApp() {
-  const { selectedScenario } = useTherapy();
-
   return (
     <div className="w-full h-screen flex flex-col bg-gradient-to-br from-blue-50 to-slate-100">
       {/* Header */}
       <header className="bg-white/90 backdrop-blur-sm border-b border-blue-200 px-6 py-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Terapia con Muñecos 3D</h1>
-            <p className="text-sm text-slate-600 mt-1">{selectedScenario.name}</p>
+            <h1 className="text-2xl font-bold text-slate-800">Los Cuatro Caminos de Vida</h1>
+            <p className="text-sm text-slate-600 mt-1">Terapia con Muñecos 3D - Técnica de Constelaciones Familiares</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-slate-500">Sesión de terapia interactiva</p>
-            <p className="text-xs text-slate-400">Arrastra los muñecos a la mesa circular</p>
+            <p className="text-sm text-slate-500">Norte: Migrante • Sur: Sufrimiento • Oeste: Deber • Este: Placer</p>
+            <p className="text-xs text-slate-400">Selecciona muñecos familiares y déjalos caer para descubrir su camino</p>
           </div>
         </div>
       </header>

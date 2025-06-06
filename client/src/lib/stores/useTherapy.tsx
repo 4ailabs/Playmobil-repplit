@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import { PlacedBuilding, SavedConfiguration, HistoricalEra, HISTORICAL_ERAS, BuildingType, BUILDING_TYPES } from "../types";
+import { PlacedDoll, SavedConfiguration, LifePath, LIFE_PATHS, DollType, DOLL_TYPES } from "../types";
 import { getLocalStorage, setLocalStorage } from "../utils";
 
 interface GameState {
