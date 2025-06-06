@@ -23,8 +23,8 @@ export default function Table3D() {
       
       console.log('Posición de colocación:', point);
       
-      // Check if position is within table bounds (rectangular: 6 wide x 8 deep)
-      if (Math.abs(point.x) <= 3 && Math.abs(point.z) <= 4) {
+      // Check if position is within table bounds (rectangular: 8 wide x 10 deep)
+      if (Math.abs(point.x) <= 4 && Math.abs(point.z) <= 5) {
         const newDoll = {
           ...draggedDoll,
           id: `placed-${Date.now()}`,
@@ -52,57 +52,57 @@ export default function Table3D() {
         onPointerDown={handlePointerDown}
         receiveShadow
       >
-        <planeGeometry args={[6, 8]} />
+        <planeGeometry args={[8, 10]} />
         <meshLambertMaterial color="#FFFFFF" />
       </mesh>
 
-      {/* Cardinal direction labels - Norte/Sur en lados cortos */}
+      {/* Cardinal direction labels - single letters */}
       <Text
-        position={[0, 0.02, -3.8]}
+        position={[0, 0.02, -4.8]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.6}
+        fontSize={0.8}
         color="black"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
       >
-        Norte
+        N
       </Text>
 
       <Text
-        position={[0, 0.02, 3.8]}
+        position={[0, 0.02, 4.8]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.6}
+        fontSize={0.8}
         color="black"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
       >
-        Sur
+        S
       </Text>
 
       <Text
-        position={[2.8, 0.02, 0]}
+        position={[3.8, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.6}
+        fontSize={0.8}
         color="black"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
       >
-        Este
+        E
       </Text>
 
       <Text
-        position={[-2.8, 0.02, 0]}
+        position={[-3.8, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.6}
+        fontSize={0.8}
         color="black"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
       >
-        Oeste
+        O
       </Text>
 
       {/* Center reference point */}

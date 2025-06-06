@@ -47,7 +47,17 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
     new THREE.Color(doll.dollType.color).multiplyScalar(1.2) : 
     new THREE.Color(doll.dollType.color);
 
-  const scale = hovered ? 1.1 : 1;
+  // Age-based scaling for different family member sizes
+  const getAgeScale = () => {
+    if (doll.dollType.id.includes('baby')) return 0.6; // Bebés más pequeños
+    if (doll.dollType.id.includes('child') || doll.dollType.id.includes('teen')) return 0.8; // Niños y adolescentes medianos
+    if (doll.dollType.category === 'father' || doll.dollType.category === 'mother') return 1.2; // Padres más grandes
+    if (doll.dollType.category === 'grandfather' || doll.dollType.category === 'grandmother') return 1.0; // Abuelos tamaño normal
+    return 1.0; // Tamaño por defecto
+  };
+
+  const ageScale = getAgeScale();
+  const scale = hovered ? ageScale * 1.1 : ageScale;
 
   // Check if this is a geometric shape (abstract concept)
   const isGeometricShape = doll.dollType.category === 'other';

@@ -21,17 +21,19 @@ export default function DollLibrary() {
     console.log('Muñeco seleccionado para arrastrar:', dollType.name);
   };
 
-  // Filter only children and adolescents that can be selected
-  const selectableDolls = DOLL_TYPES.filter(doll => 
-    doll.category === 'child' || doll.category === 'other'
-  );
+  // All doll types are now selectable for complete family constellations
+  const selectableDolls = DOLL_TYPES;
 
   const categoryIcons = {
     child: "🧒",
+    father: "👨",
+    mother: "👩", 
+    grandfather: "👴",
+    grandmother: "👵",
     other: "🔷"
   };
 
-  const categories = ['child', 'other'] as const;
+  const categories = ['child', 'father', 'mother', 'grandfather', 'grandmother', 'other'] as const;
 
   return (
     <div className="h-full flex flex-col">
@@ -52,6 +54,10 @@ export default function DollLibrary() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   <span className="text-lg">{categoryIcons[category]}</span>
                   {category === 'child' && 'Niños y Adolescentes'}
+                  {category === 'father' && 'Padres'}
+                  {category === 'mother' && 'Madres'}
+                  {category === 'grandfather' && 'Abuelos'}
+                  {category === 'grandmother' && 'Abuelas'}
                   {category === 'other' && 'Formas Geométricas'}
                 </CardTitle>
               </CardHeader>
