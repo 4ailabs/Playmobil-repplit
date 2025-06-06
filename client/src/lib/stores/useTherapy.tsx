@@ -1,47 +1,63 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import { PlacedDoll, SavedConfiguration, TherapyScenario, THERAPY_SCENARIOS } from "../types";
+import { PlacedBuilding, SavedConfiguration, HistoricalEra, HISTORICAL_ERAS, BuildingType, BUILDING_TYPES } from "../types";
 import { getLocalStorage, setLocalStorage } from "../utils";
 
-interface TherapyState {
-  // Scene state
-  placedDolls: PlacedDoll[];
-  selectedScenario: TherapyScenario;
-  draggedDoll: PlacedDoll | null;
+interface GameState {
+  // Game state
+  placedBuildings: PlacedBuilding[];
+  selectedEra: HistoricalEra;
+  draggedBuilding: PlacedBuilding | null;
   isDragging: boolean;
+  
+  // Resources and metrics
+  resources: Record<string, number>;
+  population: number;
+  sustainabilityScore: number;
   
   // UI state
   isInfoPanelOpen: boolean;
   savedConfigurations: SavedConfiguration[];
+  showHints: boolean;
+  currentHint: string | null;
   
   // Actions
-  addDoll: (doll: PlacedDoll) => void;
-  removeDoll: (dollId: string) => void;
-  updateDollPosition: (dollId: string, position: [number, number, number]) => void;
-  setDraggedDoll: (doll: PlacedDoll | null) => void;
+  addBuilding: (building: PlacedBuilding) => void;
+  removeBuilding: (buildingId: string) => void;
+  updateBuildingPosition: (buildingId: string, position: [number, number, number]) => void;
+  setDraggedBuilding: (building: PlacedBuilding | null) => void;
   setIsDragging: (isDragging: boolean) => void;
-  clearTable: () => void;
-  setSelectedScenario: (scenario: TherapyScenario) => void;
+  clearSettlement: () => void;
+  setSelectedEra: (era: HistoricalEra) => void;
   toggleInfoPanel: () => void;
+  toggleHints: () => void;
+  updateResources: () => void;
+  canAffordBuilding: (buildingType: BuildingType) => boolean;
   saveConfiguration: (name: string) => void;
   loadConfiguration: (configId: string) => void;
   deleteConfiguration: (configId: string) => void;
   initializeFromStorage: () => void;
   
   // Computed
-  dollCount: () => number;
+  buildingCount: () => number;
   getAnalysis: () => string;
+  getHint: () => string;
 }
 
-export const useTherapy = create<TherapyState>()(
+export const useGame = create<GameState>()(
   subscribeWithSelector((set, get) => ({
     // Initial state
-    placedDolls: [],
-    selectedScenario: THERAPY_SCENARIOS[0],
-    draggedDoll: null,
+    placedBuildings: [],
+    selectedEra: HISTORICAL_ERAS[0],
+    draggedBuilding: null,
     isDragging: false,
+    resources: { wood: 10, stone: 8, clay: 6, food: 5, water: 10, flour: 0 },
+    population: 0,
+    sustainabilityScore: 100,
     isInfoPanelOpen: true,
     savedConfigurations: [],
+    showHints: true,
+    currentHint: null,
     
     // Actions
     addDoll: (doll: PlacedDoll) => {
