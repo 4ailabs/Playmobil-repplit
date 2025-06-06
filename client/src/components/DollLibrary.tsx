@@ -21,14 +21,17 @@ export default function DollLibrary() {
     console.log('Muñeco seleccionado para arrastrar:', dollType.name);
   };
 
+  // Filter only children and adolescents that can be selected
+  const selectableDolls = DOLL_TYPES.filter(doll => 
+    doll.category === 'child' || doll.category === 'other'
+  );
+
   const categoryIcons = {
-    adult: "👤",
     child: "🧒",
-    authority: "👨‍💼",
-    professional: "👩‍⚕️"
+    other: "🔷"
   };
 
-  const categories = ['adult', 'child', 'authority', 'professional'] as const;
+  const categories = ['child', 'other'] as const;
 
   return (
     <div className="h-full flex flex-col">
@@ -41,17 +44,15 @@ export default function DollLibrary() {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {categories.map((category) => {
-          const categoryDolls = DOLL_TYPES.filter(doll => doll.category === category);
+          const categoryDolls = selectableDolls.filter(doll => doll.category === category);
           
           return (
             <Card key={category} className="bg-white/70 backdrop-blur-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <span className="text-lg">{categoryIcons[category]}</span>
-                  {category === 'adult' && 'Adultos'}
                   {category === 'child' && 'Niños y Adolescentes'}
-                  {category === 'authority' && 'Autoridad'}
-                  {category === 'professional' && 'Profesionales'}
+                  {category === 'other' && 'Formas Geométricas'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">

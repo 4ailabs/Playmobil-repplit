@@ -44,37 +44,17 @@ export default function Table3D() {
 
   return (
     <group>
-      {/* Main rectangular table surface - matching your image */}
+      {/* Rectangular area on the floor */}
       <mesh
         ref={meshRef}
-        position={[0, 0, 0]}
+        position={[0, 0.01, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         onPointerDown={handlePointerDown}
         receiveShadow
-        castShadow
       >
         <planeGeometry args={[6, 8]} />
         <meshLambertMaterial color="#FFFFFF" />
       </mesh>
-      
-      {/* Table base/support */}
-      <mesh position={[0, -0.1, 0]}>
-        <boxGeometry args={[6.2, 0.2, 8.2]} />
-        <meshLambertMaterial color="#E5E5E5" />
-      </mesh>
-
-      {/* Table legs */}
-      {[
-        [-2.5, -1, -3.5] as [number, number, number],
-        [2.5, -1, -3.5] as [number, number, number], 
-        [-2.5, -1, 3.5] as [number, number, number],
-        [2.5, -1, 3.5] as [number, number, number]
-      ].map((position, index) => (
-        <mesh key={index} position={position} castShadow>
-          <cylinderGeometry args={[0.15, 0.15, 2]} />
-          <meshLambertMaterial color="#CCCCCC" />
-        </mesh>
-      ))}
 
       {/* Cardinal direction labels - Norte/Sur en lados cortos */}
       <Text

@@ -37,20 +37,36 @@ export interface SavedConfiguration {
 }
 
 export const DOLL_TYPES: DollType[] = [
-  { id: 'self', name: 'Yo/Myself', color: '#4F46E5', description: 'Representa a la persona en terapia', category: 'self' },
-  { id: 'father', name: 'Padre', color: '#1E40AF', description: 'Figura paterna', category: 'father' },
-  { id: 'mother', name: 'Madre', color: '#EC4899', description: 'Figura materna', category: 'mother' },
-  { id: 'grandfather-p', name: 'Abuelo Paterno', color: '#6B7280', description: 'Abuelo de línea paterna', category: 'grandfather' },
-  { id: 'grandmother-p', name: 'Abuela Paterna', color: '#9CA3AF', description: 'Abuela de línea paterna', category: 'grandmother' },
-  { id: 'grandfather-m', name: 'Abuelo Materno', color: '#374151', description: 'Abuelo de línea materna', category: 'grandfather' },
-  { id: 'grandmother-m', name: 'Abuela Materna', color: '#6B7280', description: 'Abuela de línea materna', category: 'grandmother' },
-  { id: 'partner', name: 'Pareja', color: '#DC2626', description: 'Pareja actual o significativa', category: 'partner' },
-  { id: 'child-1', name: 'Hijo/a Mayor', color: '#10B981', description: 'Primer hijo/a', category: 'child' },
-  { id: 'child-2', name: 'Hijo/a 2', color: '#34D399', description: 'Segundo hijo/a', category: 'child' },
-  { id: 'sibling-1', name: 'Hermano/a Mayor', color: '#3B82F6', description: 'Hermano/a mayor', category: 'sibling' },
-  { id: 'sibling-2', name: 'Hermano/a Menor', color: '#60A5FA', description: 'Hermano/a menor', category: 'sibling' },
-  { id: 'other-1', name: 'Otro Familiar', color: '#F59E0B', description: 'Otra figura significativa', category: 'other' },
-  { id: 'other-2', name: 'Figura Importante', color: '#7C3AED', description: 'Otra persona importante', category: 'other' }
+  // Children and Adolescents - Only these can be selected in therapy
+  { id: 'baby-boy', name: 'Bebé (niño)', color: '#93C5FD', description: 'Bebé varón (0-2 años)', category: 'child' },
+  { id: 'baby-girl', name: 'Bebé (niña)', color: '#FBBF24', description: 'Bebé niña (0-2 años)', category: 'child' },
+  { id: 'child-boy', name: 'Niño', color: '#3B82F6', description: 'Niño pequeño (3-8 años)', category: 'child' },
+  { id: 'child-girl', name: 'Niña', color: '#EC4899', description: 'Niña pequeña (3-8 años)', category: 'child' },
+  { id: 'teen-boy', name: 'Adolescente (chico)', color: '#1E40AF', description: 'Adolescente varón (9-17 años)', category: 'child' },
+  { id: 'teen-girl', name: 'Adolescente (chica)', color: '#DB2777', description: 'Adolescente mujer (9-17 años)', category: 'child' },
+  
+  // Adults - Parents generation
+  { id: 'father', name: 'Padre', color: '#1F2937', description: 'Figura paterna', category: 'father' },
+  { id: 'mother', name: 'Madre', color: '#7C2D12', description: 'Figura materna', category: 'mother' },
+  { id: 'stepfather', name: 'Padrastro', color: '#374151', description: 'Padrastro o figura paterna sustituta', category: 'father' },
+  { id: 'stepmother', name: 'Madrastra', color: '#92400E', description: 'Madrastra o figura materna sustituta', category: 'mother' },
+  
+  // Grandparents generation
+  { id: 'grandfather-paternal', name: 'Abuelo Paterno', color: '#4B5563', description: 'Padre del padre', category: 'grandfather' },
+  { id: 'grandmother-paternal', name: 'Abuela Paterna', color: '#6B7280', description: 'Madre del padre', category: 'grandmother' },
+  { id: 'grandfather-maternal', name: 'Abuelo Materno', color: '#374151', description: 'Padre de la madre', category: 'grandfather' },
+  { id: 'grandmother-maternal', name: 'Abuela Materna', color: '#9CA3AF', description: 'Madre de la madre', category: 'grandmother' },
+  
+  // Adult children (sons and daughters)
+  { id: 'son-adult', name: 'Hijo (adulto)', color: '#059669', description: 'Hijo varón adulto', category: 'child' },
+  { id: 'daughter-adult', name: 'Hija (adulta)', color: '#10B981', description: 'Hija mujer adulta', category: 'child' },
+  
+  // Abstract geometric shapes for concepts
+  { id: 'circle-concept', name: 'Círculo', color: '#8B5CF6', description: 'Representa emociones, ciclos o conceptos abstractos', category: 'other' },
+  { id: 'triangle-concept', name: 'Triángulo', color: '#F59E0B', description: 'Representa conflictos, tensiones o cambios', category: 'other' },
+  { id: 'square-concept', name: 'Cuadrado', color: '#EF4444', description: 'Representa estabilidad, normas o estructuras', category: 'other' },
+  { id: 'diamond-concept', name: 'Rombo', color: '#10B981', description: 'Representa valores, objetivos o aspiraciones', category: 'other' },
+  { id: 'star-concept', name: 'Estrella', color: '#F97316', description: 'Representa sueños, esperanzas o guías espirituales', category: 'other' }
 ];
 
 export const LIFE_PATHS: LifePath[] = [
