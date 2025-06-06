@@ -14,6 +14,7 @@ interface TherapyState {
   isInfoPanelOpen: boolean;
   savedConfigurations: SavedConfiguration[];
   selectedDollId: string | null;
+  isFullscreen: boolean;
   
   // Actions
   addDoll: (doll: PlacedDoll) => void;
@@ -26,6 +27,7 @@ interface TherapyState {
   setSelectedLifePath: (lifePath: LifePath | null) => void;
   setSelectedDollId: (dollId: string | null) => void;
   toggleInfoPanel: () => void;
+  toggleFullscreen: () => void;
   dropDoll: (dollId: string, position: [number, number, number]) => void;
   saveConfiguration: (name: string) => void;
   loadConfiguration: (configId: string) => void;
@@ -48,6 +50,7 @@ export const useTherapy = create<TherapyState>()(
     isInfoPanelOpen: true,
     savedConfigurations: [],
     selectedDollId: null,
+    isFullscreen: false,
     
     // Actions
     addDoll: (doll: PlacedDoll) => {
@@ -101,6 +104,12 @@ export const useTherapy = create<TherapyState>()(
     toggleInfoPanel: () => {
       set((state) => ({
         isInfoPanelOpen: !state.isInfoPanelOpen
+      }));
+    },
+
+    toggleFullscreen: () => {
+      set((state) => ({
+        isFullscreen: !state.isFullscreen
       }));
     },
 
