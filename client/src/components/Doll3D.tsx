@@ -12,7 +12,7 @@ interface Doll3DProps {
 export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const { removeDoll, setDraggedDoll, setIsDragging, isDragging } = useTherapy();
+  const { removeDoll, setDraggedDoll, setIsDragging, isDragging, updateDollRotation } = useTherapy();
 
   // Subtle floating animation
   useFrame((state) => {
@@ -33,6 +33,20 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
     if (isDragging) {
       setIsDragging(false);
       setDraggedDoll(null);
+    }
+  };
+
+  const handleDoubleClick = (event: any) => {
+    if (isPlaced) {
+      event.stopPropagation();
+      // Rotate 45 degrees on Y axis to change direction
+      const newRotation: [number, number, number] = [
+        doll.rotation[0],
+        doll.rotation[1] + Math.PI / 4,
+        doll.rotation[2]
+      ];
+      updateDollRotation(doll.id, newRotation);
+      console.log('Rotando muñeco:', doll.dollType.name, 'Nueva dirección');
     }
   };
 
@@ -73,6 +87,7 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         scale={[scale, scale, scale]}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
+        onDoubleClick={handleDoubleClick}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
         onContextMenu={handleRightClick}
@@ -133,6 +148,7 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
       scale={[scale, scale, scale]}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onDoubleClick={handleDoubleClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onContextMenu={handleRightClick}
