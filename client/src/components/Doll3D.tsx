@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { PlacedDoll } from "../lib/types";
@@ -12,7 +12,7 @@ interface Doll3DProps {
 export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const { removeDoll, setDraggedDoll, setIsDragging, isDragging, updateDollRotation } = useTherapy();
+  const { removeDoll, setDraggedDoll, setIsDragging, isDragging, updateDollRotation, selectedDollId, setSelectedDollId } = useTherapy();
 
   // Subtle floating animation
   useFrame((state) => {
@@ -24,6 +24,10 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
   const handlePointerDown = (event: any) => {
     if (isPlaced) {
       event.stopPropagation();
+      // Select the doll instead of dragging when placed
+      setSelectedDollId(doll.id);
+      console.log('Muñeco seleccionado:', doll.dollType.name, 'Presiona Delete/Backspace para eliminar');
+    } else {
       setDraggedDoll(doll);
       setIsDragging(true);
     }

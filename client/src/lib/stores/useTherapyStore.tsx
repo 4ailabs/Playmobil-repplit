@@ -13,6 +13,7 @@ interface TherapyState {
   // UI state
   isInfoPanelOpen: boolean;
   savedConfigurations: SavedConfiguration[];
+  selectedDollId: string | null;
   
   // Actions
   addDoll: (doll: PlacedDoll) => void;
@@ -23,6 +24,7 @@ interface TherapyState {
   setIsDragging: (isDragging: boolean) => void;
   clearTable: () => void;
   setSelectedLifePath: (lifePath: LifePath | null) => void;
+  setSelectedDollId: (dollId: string | null) => void;
   toggleInfoPanel: () => void;
   dropDoll: (dollId: string, position: [number, number, number]) => void;
   saveConfiguration: (name: string) => void;
@@ -45,6 +47,7 @@ export const useTherapy = create<TherapyState>()(
     isDragging: false,
     isInfoPanelOpen: true,
     savedConfigurations: [],
+    selectedDollId: null,
     
     // Actions
     addDoll: (doll: PlacedDoll) => {
@@ -89,6 +92,10 @@ export const useTherapy = create<TherapyState>()(
     
     setSelectedLifePath: (lifePath: LifePath | null) => {
       set({ selectedLifePath: lifePath });
+    },
+
+    setSelectedDollId: (dollId: string | null) => {
+      set({ selectedDollId: dollId });
     },
     
     toggleInfoPanel: () => {
