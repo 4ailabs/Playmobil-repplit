@@ -2,14 +2,14 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import SettlementArea from "./SettlementArea";
-import Building3D from "./Building3D";
-import { useGame } from "../lib/stores/useTherapy";
+import Table3D from "./Table3D";
+import Doll3D from "./Doll3D";
+import { useTherapy } from "../lib/stores/useTherapyStore";
 
 export default function Scene3D() {
   const { camera } = useThree();
   const controlsRef = useRef<any>();
-  const { placedBuildings } = useGame();
+  const { placedDolls } = useTherapy();
 
   // Set up initial camera position
   useEffect(() => {
@@ -20,10 +20,10 @@ export default function Scene3D() {
   return (
     <>
       {/* Lighting */}
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.4} />
       <directionalLight
         position={[10, 10, 5]}
-        intensity={1.2}
+        intensity={1}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -36,7 +36,7 @@ export default function Scene3D() {
       <pointLight position={[-10, 5, -5]} intensity={0.3} />
 
       {/* Environment */}
-      <Environment preset="forest" />
+      <Environment preset="city" />
 
       {/* Camera Controls */}
       <OrbitControls
@@ -53,22 +53,22 @@ export default function Scene3D() {
         dampingFactor={0.05}
       />
 
-      {/* Settlement Area */}
-      <SettlementArea />
+      {/* Main Table with Four Life Paths indicators */}
+      <Table3D />
 
-      {/* Placed Buildings */}
-      {placedBuildings.map((building) => (
-        <Building3D
-          key={building.id}
-          building={building}
+      {/* Placed Dolls */}
+      {placedDolls.map((doll) => (
+        <Doll3D
+          key={doll.id}
+          doll={doll}
           isPlaced={true}
         />
       ))}
 
-      {/* Ground plane for natural terrain */}
-      <mesh receiveShadow position={[0, -0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Ground plane for shadows */}
+      <mesh receiveShadow position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[50, 50]} />
-        <meshLambertMaterial color="#7cb342" transparent opacity={0.9} />
+        <meshLambertMaterial color="#f8fafc" transparent opacity={0.8} />
       </mesh>
     </>
   );

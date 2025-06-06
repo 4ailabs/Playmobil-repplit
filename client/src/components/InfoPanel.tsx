@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTherapy } from "../lib/stores/useTherapy";
+import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";

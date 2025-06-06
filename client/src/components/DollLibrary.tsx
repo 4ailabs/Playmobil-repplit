@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DOLL_TYPES } from "../lib/types";
-import { useTherapy } from "../lib/stores/useTherapy";
+import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 
@@ -13,7 +13,9 @@ export default function DollLibrary() {
       id: `temp-${Date.now()}`,
       dollType,
       position: [0, 0.4, 0] as [number, number, number],
-      rotation: [0, 0, 0] as [number, number, number]
+      rotation: [0, 0, 0] as [number, number, number],
+      lifePath: null as 'north' | 'south' | 'east' | 'west' | null,
+      isDropped: false
     };
     setDraggedDoll(newDoll);
   };

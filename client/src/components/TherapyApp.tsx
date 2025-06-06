@@ -4,7 +4,7 @@ import Scene3D from "./Scene3D";
 import DollLibrary from "./DollLibrary";
 import LifePathsPanel from "./LifePathsPanel";
 import InfoPanel from "./InfoPanel";
-import { useTherapy } from "../lib/stores/useTherapy";
+import { useTherapy } from "../lib/stores/useTherapyStore";
 
 export default function TherapyApp() {
   return (
@@ -52,9 +52,9 @@ export default function TherapyApp() {
           </Canvas>
         </div>
 
-        {/* Right Sidebar - Scenarios */}
+        {/* Right Sidebar - Life Paths */}
         <div className="w-80 bg-white/80 backdrop-blur-sm border-l border-blue-200 shadow-sm">
-          <ScenarioPanel />
+          <LifePathsPanel />
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { useTexture } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { useTherapy } from "../lib/stores/useTherapy";
+import { useTherapy } from "../lib/stores/useTherapyStore";
 import { DOLL_TYPES } from "../lib/types";
 
 export default function Table3D() {
