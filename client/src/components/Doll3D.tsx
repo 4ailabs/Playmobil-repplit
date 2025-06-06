@@ -49,6 +49,70 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
 
   const scale = hovered ? 1.1 : 1;
 
+  // Check if this is a geometric shape (abstract concept)
+  const isGeometricShape = doll.dollType.category === 'other';
+
+  if (isGeometricShape) {
+    return (
+      <group
+        ref={groupRef}
+        position={doll.position}
+        rotation={doll.rotation}
+        scale={[scale, scale, scale]}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onContextMenu={handleRightClick}
+      >
+        {/* Render different geometric shapes */}
+        {doll.dollType.id === 'circle-concept' && (
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <sphereGeometry args={[0.2, 16, 16]} />
+            <meshLambertMaterial color={dollColor} />
+          </mesh>
+        )}
+        
+        {doll.dollType.id === 'triangle-concept' && (
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <coneGeometry args={[0.2, 0.4, 3]} />
+            <meshLambertMaterial color={dollColor} />
+          </mesh>
+        )}
+        
+        {doll.dollType.id === 'square-concept' && (
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <boxGeometry args={[0.3, 0.3, 0.3]} />
+            <meshLambertMaterial color={dollColor} />
+          </mesh>
+        )}
+        
+        {doll.dollType.id === 'diamond-concept' && (
+          <mesh position={[0, 0.2, 0]} rotation={[0, 0, Math.PI / 4]} castShadow>
+            <octahedronGeometry args={[0.2]} />
+            <meshLambertMaterial color={dollColor} />
+          </mesh>
+        )}
+        
+        {doll.dollType.id === 'star-concept' && (
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <dodecahedronGeometry args={[0.18]} />
+            <meshLambertMaterial color={dollColor} />
+          </mesh>
+        )}
+
+        {/* Selection indicator for geometric shapes */}
+        {hovered && (
+          <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.25, 0.3, 16]} />
+            <meshBasicMaterial color="#FFD700" transparent opacity={0.6} />
+          </mesh>
+        )}
+      </group>
+    );
+  }
+
+  // Render human figure for children and adolescents
   return (
     <group
       ref={groupRef}
@@ -61,18 +125,19 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
       onPointerLeave={() => setHovered(false)}
       onContextMenu={handleRightClick}
     >
-      {/* Body (cylinder) */}
+      {/* Body (cylinder) - different sizes for different ages */}
       <mesh position={[0, 0.2, 0]} castShadow>
-        <cylinderGeometry args={[0.15, 0.2, 0.6, 8]} />
-        <meshStandardMaterial
-          color={dollColor}
-          roughness={0.7}
-          metalness={0.1}
-        />
+        <cylinderGeometry args={[
+          doll.dollType.id.includes('baby') ? 0.1 : 0.15, 
+          doll.dollType.id.includes('baby') ? 0.12 : 0.2, 
+          doll.dollType.id.includes('baby') ? 0.4 : 0.6, 
+          8
+        ]} />
+        <meshLambertMaterial color={dollColor} />
       </mesh>
 
-      {/* Head (sphere) */}
-      <mesh position={[0, 0.65, 0]} castShadow>
+      {/* Head (sphere) - different sizes for different ages */}
+      <mesh position={[0, doll.dollType.id.includes('baby') ? 0.5 : 0.65, 0]} castShadow>
         <sphereGeometry args={[0.12, 16, 16]} />
         <meshStandardMaterial
           color={dollColor.clone().multiplyScalar(0.9)}
