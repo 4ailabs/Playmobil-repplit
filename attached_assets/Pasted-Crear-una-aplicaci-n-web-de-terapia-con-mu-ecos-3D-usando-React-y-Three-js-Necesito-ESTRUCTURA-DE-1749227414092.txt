@@ -1,0 +1,61 @@
+Crear una aplicación web de terapia con muñecos 3D usando React y Three.js. Necesito:
+
+ESTRUCTURA DEL PROYECTO:
+- React app con Three.js integrado
+- @react-three/fiber y @react-three/drei
+- Estructura de carpetas organizada
+
+FUNCIONALIDADES PRINCIPALES:
+1. Escena 3D con:
+   - Mesa circular de madera en el centro (textura realista)
+   - Cámara orbital con controles (zoom, pan, rotate)
+   - Iluminación ambiental y direccional
+   - Fondo degradado suave
+
+2. Biblioteca de muñecos (sidebar izquierdo):
+   - 12 tipos diferentes: adulto masculino/femenino, anciano/a, adolescente M/F, niño/niña, bebé, autoridad, profesional, cuidador
+   - Cada muñeco como geometría 3D simple (cilindro + esfera para cabeza)
+   - Colores distintivos para cada tipo
+   - Drag & drop desde biblioteca a mesa 3D
+
+3. Sistema drag & drop 3D:
+   - Arrastrar muñecos desde sidebar a mesa circular
+   - Mover muñecos ya colocados en la mesa
+   - Restricción: solo dentro del área de la mesa circular
+   - Click derecho para eliminar muñeco de la mesa
+
+4. Panel de escenarios (sidebar derecho):
+   - 5 botones: "Dinámicas Familiares", "Relaciones de Pareja", "Estructura Intrapsíquica", "Sistémico Transgeneracional", "Dinámicas Laborales"
+   - Al seleccionar escenario, cambiar título y mostrar descripción
+   - Limpiar mesa automáticamente al cambiar escenario
+
+5. Panel de información (esquina inferior):
+   - Mostrar número de muñecos en mesa
+   - Análisis básico según cantidad: 1="individual", 2="relación dual", 3-4="grupo pequeño", 5+="sistema complejo"
+   - Botones: "Limpiar Mesa", "Guardar Config", "Cargar Config"
+
+6. Sistema de guardado:
+   - Guardar en localStorage las posiciones de muñecos
+   - Incluir tipo de muñeco y coordenadas 3D
+   - Cargar configuraciones guardadas
+
+ESPECIFICACIONES TÉCNICAS:
+- Mesa circular: radio 4 unidades, altura 0.1, textura madera
+- Muñecos: altura 0.8, geometría simple pero reconocible
+- Cámara inicial: posición (10, 8, 10) mirando al centro
+- Controles suaves y responsivos
+- UI moderna con Tailwind CSS
+
+CARACTERÍSTICAS 3D:
+- Raycasting para detección de clicks en mesa
+- Transformaciones suaves con animaciones
+- Sombras realistas en la mesa
+- Vista desde múltiples ángulos
+
+INTERFAZ:
+- Header con título "Terapia con Muñecos 3D"
+- Layout: sidebar izquierdo (biblioteca), centro (escena 3D), sidebar derecho (escenarios)
+- Panel flotante inferior con controles
+- Colores: azules y grises suaves, moderno y profesional
+
+Crear todos los archivos necesarios: package.json, componentes React, estilos, y lógica completa funcionando.
