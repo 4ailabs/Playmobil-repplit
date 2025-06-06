@@ -18,6 +18,7 @@ export default function DollLibrary() {
       isDropped: false
     };
     setDraggedDoll(newDoll);
+    console.log('Muñeco seleccionado para arrastrar:', dollType.name);
   };
 
   const categoryIcons = {
