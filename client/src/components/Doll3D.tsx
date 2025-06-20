@@ -105,6 +105,9 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
 
   // Check if this is a geometric shape (abstract concept)
   const isGeometricShape = doll.dollType.category === 'other';
+  
+  // Check if this is a deceased baby (special representation)
+  const isDeceasedBaby = doll.dollType.category === 'deceased';
 
   if (isGeometricShape) {
     return (
@@ -204,6 +207,90 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
           <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.25, 0.3, 16]} />
             <meshBasicMaterial color="#FFD700" transparent opacity={0.6} />
+          </mesh>
+        )}
+      </group>
+    );
+  }
+
+  // Special representation for deceased babies
+  if (isDeceasedBaby) {
+    return (
+      <group
+        ref={groupRef}
+        position={doll.position}
+        rotation={doll.rotation}
+        scale={[scale * 0.5, scale * 0.5, scale * 0.5]} // Smaller size
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onDoubleClick={handleDoubleClick}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
+        {/* Ethereal sphere representing the spirit */}
+        <mesh position={[0, 0.3, 0]} castShadow>
+          <sphereGeometry args={[0.15, 16, 16]} />
+          <meshStandardMaterial 
+            color={dollColor} 
+            transparent 
+            opacity={0.7}
+            emissive={dollColor.clone().multiplyScalar(0.2)}
+          />
+        </mesh>
+
+        {/* Small halo above */}
+        <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.08, 0.12, 16]} />
+          <meshStandardMaterial 
+            color="#FFD700" 
+            transparent 
+            opacity={0.8}
+            emissive="#FFD700"
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+
+        {/* Eyes - simple dots */}
+        <group rotation={[0, gazeOffset, 0]}>
+          {/* Left eye */}
+          <mesh position={[-0.03, 0.32, 0.12]} castShadow>
+            <sphereGeometry args={[0.01, 6, 6]} />
+            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.9} />
+          </mesh>
+          
+          {/* Right eye */}
+          <mesh position={[0.03, 0.32, 0.12]} castShadow>
+            <sphereGeometry args={[0.01, 6, 6]} />
+            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.9} />
+          </mesh>
+        </group>
+
+        {/* Direction indicator for deceased babies */}
+        {isPlaced && (
+          <>
+            {/* Direction arrow - softer color */}
+            <mesh position={[0, 0.6, 0.1]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+              <coneGeometry args={[0.03, 0.1, 3]} />
+              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.8} />
+            </mesh>
+            
+            {/* Direction line */}
+            <mesh position={[0, 0.6, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.015, 0.015, 0.1, 6]} />
+              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.8} />
+            </mesh>
+          </>
+        )}
+
+        {/* Selection indicator */}
+        {(hovered || selectedDollId === doll.id) && (
+          <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.2, 0.25, 16]} />
+            <meshBasicMaterial 
+              color={selectedDollId === doll.id ? "#FF4444" : "#3B82F6"} 
+              transparent 
+              opacity={selectedDollId === doll.id ? 0.9 : 0.7} 
+            />
           </mesh>
         )}
       </group>

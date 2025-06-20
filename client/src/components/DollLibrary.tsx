@@ -64,10 +64,11 @@ export default function DollLibrary() {
     mother: "👩", 
     grandfather: "👴",
     grandmother: "👵",
+    deceased: "👼",
     other: "🔷"
   };
 
-  const categories = ['child', 'father', 'mother', 'grandfather', 'grandmother', 'other'] as const;
+  const categories = ['child', 'deceased', 'father', 'mother', 'grandfather', 'grandmother', 'other'] as const;
 
   return (
     <div className="h-full flex flex-col">
@@ -88,6 +89,7 @@ export default function DollLibrary() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   <span className="text-lg">{categoryIcons[category]}</span>
                   {category === 'child' && 'Niños y Adolescentes'}
+                  {category === 'deceased' && 'Bebés Fallecidos'}
                   {category === 'father' && 'Padres'}
                   {category === 'mother' && 'Madres'}
                   {category === 'grandfather' && 'Abuelos'}

@@ -3,7 +3,7 @@ export interface DollType {
   name: string;
   color: string;
   description: string;
-  category: 'self' | 'father' | 'mother' | 'grandfather' | 'grandmother' | 'partner' | 'child' | 'sibling' | 'other';
+  category: 'self' | 'father' | 'mother' | 'grandfather' | 'grandmother' | 'partner' | 'child' | 'sibling' | 'deceased' | 'other';
 }
 
 export interface PlacedDoll {
@@ -40,6 +40,11 @@ export const DOLL_TYPES: DollType[] = [
   // Children and Adolescents - Only these can be selected in therapy
   { id: 'baby-boy', name: 'Bebé (niño)', color: '#93C5FD', description: 'Bebé varón (0-2 años)', category: 'child' },
   { id: 'baby-girl', name: 'Bebé (niña)', color: '#FBBF24', description: 'Bebé niña (0-2 años)', category: 'child' },
+  
+  // Deceased babies - important for systemic dynamics
+  { id: 'deceased-baby-boy', name: 'Bebé Fallecido (niño)', color: '#6B7280', description: 'Bebé varón fallecido (aborto/óbito)', category: 'deceased' },
+  { id: 'deceased-baby-girl', name: 'Bebé Fallecido (niña)', color: '#9CA3AF', description: 'Bebé niña fallecida (aborto/óbito)', category: 'deceased' },
+  { id: 'deceased-baby-unknown', name: 'Bebé Fallecido (desconocido)', color: '#D1D5DB', description: 'Bebé fallecido de sexo desconocido', category: 'deceased' },
   { id: 'child-boy', name: 'Niño', color: '#3B82F6', description: 'Niño pequeño (3-8 años)', category: 'child' },
   { id: 'child-girl', name: 'Niña', color: '#EC4899', description: 'Niña pequeña (3-8 años)', category: 'child' },
   { id: 'teen-boy', name: 'Adolescente (chico)', color: '#1E40AF', description: 'Adolescente varón (9-17 años)', category: 'child' },
