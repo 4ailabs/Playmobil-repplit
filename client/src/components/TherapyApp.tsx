@@ -18,7 +18,7 @@ export default function TherapyApp() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">Los Cuatro Caminos de Vida</h1>
-              <p className="text-sm text-slate-600 mt-1">Terapia con Muñecos 3D - Técnica de Constelaciones Familiares</p>
+              <p className="text-sm text-slate-600 mt-1">Terapia con Muñecos 3D - Técnica de Dinámicas Sistémicas</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-slate-500">Norte: Migrante • Sur: Sufrimiento • Oeste: Deber • Este: Placer</p>

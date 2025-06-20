@@ -41,7 +41,7 @@ export default function InstructionsPanel() {
             • Selecciona un familiar de la biblioteca<br/>
             • ¡El muñeco cae automáticamente al azar en la mesa!<br/>
             • Posición y dirección espontáneas revelan dinámicas inconscientes<br/>
-            • Metodología auténtica de constelaciones familiares
+            • Metodología auténtica de dinámicas sistémicas
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function InstructionsPanel() {
           <h4 className="font-semibold text-blue-800 mb-1">💡 Metodología Auténtica:</h4>
           <p className="text-xs text-blue-700">
             La colocación aleatoria automática simula el proceso intuitivo 
-            de las constelaciones familiares. Cada posición, dirección y 
+            de las dinámicas sistémicas. Cada posición, dirección y 
             camino de vida revelados espontáneamente reflejan el inconsciente 
             familiar sistémico. Analiza las distancias, orientaciones y 
             agrupaciones para comprender las dinámicas relacionales.
