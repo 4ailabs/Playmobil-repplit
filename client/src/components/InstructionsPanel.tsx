@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { Shuffle, Eye, Trash2, Baby, Camera, Monitor, Compass, Lightbulb, X } from "lucide-react";
+import { Shuffle, Eye, Trash2, Baby, Camera, Monitor, Compass, Lightbulb, X, BookOpen } from "lucide-react";
 
 export default function InstructionsPanel() {
   const [isOpen, setIsOpen] = useState(true);
@@ -10,10 +10,10 @@ export default function InstructionsPanel() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white"
+        className="fixed top-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
         size="sm"
       >
-        📋 Instrucciones
+        <BookOpen className="w-4 h-4" /> Instrucciones
       </Button>
     );
   }
