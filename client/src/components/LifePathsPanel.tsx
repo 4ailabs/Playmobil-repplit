@@ -131,10 +131,10 @@ export default function LifePathsPanel() {
       )}
 
       {/* Instructions */}
-      <div className="p-4 border-t border-blue-200 bg-slate-50/50 mb-32 md:mb-40">
-        <div className="text-base md:text-lg text-slate-700 space-y-1 flex flex-col">
+      <div className="p-2 border-t border-blue-200 bg-slate-50/50 mb-16 md:mb-24">
+        <div className="text-sm md:text-base text-slate-700 space-y-1 flex flex-col">
           <span className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
-            <Lightbulb className="w-5 h-5 text-blue-500" /> Proceso de la Técnica:
+            <Lightbulb className="w-4 h-4 text-blue-500" /> Proceso de la Técnica:
           </span>
           <span>1. Selecciona muñecos familiares de la biblioteca</span>
           <span>2. Coloca el muñeco en el centro de la mesa</span>
