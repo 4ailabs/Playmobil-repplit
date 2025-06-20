@@ -77,6 +77,16 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
+          <h4 className="font-semibold text-blue-800 mb-2">📸 Exportar Imagen:</h4>
+          <p className="text-gray-700">
+            • Botón verde en esquina superior derecha<br/>
+            • Descarga imagen PNG de la constelación actual<br/>
+            • Documentar sesiones para registros terapéuticos<br/>
+            • Archivo nombrado con fecha y hora automáticamente
+          </p>
+        </div>
+
+        <div>
           <h4 className="font-semibold text-blue-800 mb-2">🖥️ Pantalla Completa:</h4>
           <p className="text-gray-700">
             • Botón azul en esquina superior derecha<br/>
