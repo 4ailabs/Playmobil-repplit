@@ -3,6 +3,7 @@ import { DOLL_TYPES } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { UserRound, User, UserCog, Baby, Shapes } from "lucide-react";
 
 export default function DollLibrary() {
   const { setDraggedDoll, draggedDoll, addDoll, dropDoll } = useTherapy();
@@ -59,13 +60,13 @@ export default function DollLibrary() {
   const selectableDolls = DOLL_TYPES;
 
   const categoryIcons = {
-    child: "🧒",
-    father: "👨",
-    mother: "👩", 
-    grandfather: "👴",
-    grandmother: "👵",
-    deceased: "👼",
-    other: "🔷"
+    child: <UserRound className="w-5 h-5 text-blue-500" />,
+    father: <User className="w-5 h-5 text-blue-800" />,
+    mother: <User className="w-5 h-5 text-pink-600" />,
+    grandfather: <UserCog className="w-5 h-5 text-gray-700" />,
+    grandmother: <UserCog className="w-5 h-5 text-pink-400" />,
+    deceased: <Baby className="w-5 h-5 text-yellow-500" />,
+    other: <Shapes className="w-5 h-5 text-indigo-400" />
   };
 
   const categories = ['child', 'deceased', 'father', 'mother', 'grandfather', 'grandmother', 'other'] as const;
