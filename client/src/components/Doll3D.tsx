@@ -137,6 +137,48 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
           </mesh>
         )}
 
+        {/* Eyes for geometric shapes - positioned on the front */}
+        {/* Left eye (white) */}
+        <mesh position={[-0.08, 0.25, 0.15]} castShadow>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
+        
+        {/* Right eye (white) */}
+        <mesh position={[0.08, 0.25, 0.15]} castShadow>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
+
+        {/* Left pupil (black) */}
+        <mesh position={[-0.08, 0.25, 0.18]} castShadow>
+          <sphereGeometry args={[0.015, 6, 6]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+        
+        {/* Right pupil (black) */}
+        <mesh position={[0.08, 0.25, 0.18]} castShadow>
+          <sphereGeometry args={[0.015, 6, 6]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+
+        {/* Direction indicator for geometric shapes */}
+        {isPlaced && (
+          <>
+            {/* Direction arrow */}
+            <mesh position={[0, 0.4, 0.15]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+              <coneGeometry args={[0.05, 0.15, 3]} />
+              <meshBasicMaterial color="#FF6B6B" />
+            </mesh>
+            
+            {/* Direction line */}
+            <mesh position={[0, 0.4, 0.08]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.15, 6]} />
+              <meshBasicMaterial color="#FF6B6B" />
+            </mesh>
+          </>
+        )}
+
         {/* Selection indicator for geometric shapes */}
         {hovered && (
           <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -180,6 +222,31 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
           roughness={0.6}
           metalness={0.1}
         />
+      </mesh>
+
+      {/* Eyes - positioned on the front of the head */}
+      {/* Left eye (white) */}
+      <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
+        <sphereGeometry args={[0.02, 8, 8]} />
+        <meshStandardMaterial color="#FFFFFF" />
+      </mesh>
+      
+      {/* Right eye (white) */}
+      <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
+        <sphereGeometry args={[0.02, 8, 8]} />
+        <meshStandardMaterial color="#FFFFFF" />
+      </mesh>
+
+      {/* Left pupil (black) */}
+      <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
+        <sphereGeometry args={[0.01, 6, 6]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      
+      {/* Right pupil (black) */}
+      <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
+        <sphereGeometry args={[0.01, 6, 6]} />
+        <meshStandardMaterial color="#000000" />
       </mesh>
 
       {/* Arms */}

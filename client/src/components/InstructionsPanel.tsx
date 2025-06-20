@@ -46,11 +46,12 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🔄 Rotar Dirección:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2">👁️ Dirección Visual:</h4>
           <p className="text-gray-700">
-            • Doble clic en un muñeco colocado para rotarlo<br/>
-            • La flecha roja muestra hacia dónde mira<br/>
-            • Importante para analizar dinámicas relacionales
+            • Los ojos y flecha roja muestran hacia dónde mira cada muñeco<br/>
+            • Doble clic para rotar y cambiar la dirección<br/>
+            • Los ojos siguen la misma orientación que la flecha<br/>
+            • Crucial para interpretar dinámicas relacionales
           </p>
         </div>
 
