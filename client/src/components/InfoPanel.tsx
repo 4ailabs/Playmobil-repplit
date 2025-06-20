@@ -120,11 +120,9 @@ export default function InfoPanel() {
             </Button>
             <Button
               onClick={toggleInfoPanel}
-              size="sm"
-              variant="ghost"
-              className="text-slate-500 hover:text-slate-700"
+              className="h-8 w-auto px-3 py-1 bg-red-100 border border-red-300 text-red-700 font-semibold rounded hover:bg-red-200 transition-all text-xs"
             >
-              ✕
+              <svg xmlns="http://www.w3.org/2000/svg" className="inline w-4 h-4 mr-1 align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg> Ocultar
             </Button>
           </div>
         </div>
