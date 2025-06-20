@@ -2,14 +2,14 @@ import { LIFE_PATHS } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Compass, Sword, Sun, Scale, Lightbulb } from "lucide-react";
+import { Compass, Sword, Sun, Scale, Lightbulb, HeartCrack } from "lucide-react";
 
 export default function LifePathsPanel() {
   const { selectedLifePath, setSelectedLifePath } = useTherapy();
 
   const pathIcons = {
     north: <Compass className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-blue-700" />,
-    south: <Sword className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-red-700" />,
+    south: <HeartCrack className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-red-700" />,
     east: <Sun className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-yellow-500" />,
     west: <Scale className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-amber-700" />,
   };
@@ -132,7 +132,7 @@ export default function LifePathsPanel() {
 
       {/* Instructions */}
       <div className="p-2 border-t border-blue-200 bg-slate-50/50 mb-16 md:mb-24">
-        <div className="text-sm md:text-base text-slate-700 space-y-1 flex flex-col">
+        <div className="text-xs md:text-sm text-slate-700 space-y-1 flex flex-col">
           <span className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
             <Lightbulb className="w-4 h-4 text-blue-500" /> Metodología de los Caminos de Vida
           </span>
