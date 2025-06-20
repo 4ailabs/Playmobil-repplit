@@ -73,6 +73,24 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
     new THREE.Color(doll.dollType.color).multiplyScalar(1.2) : 
     new THREE.Color(doll.dollType.color);
 
+  // Calculate independent gaze direction
+  const getGazeDirection = () => {
+    // 70% chance the gaze follows body direction, 30% chance it's independent
+    const followsBody = Math.random() > 0.3;
+    
+    if (followsBody) {
+      // Eyes look in the same direction as body
+      return 0;
+    } else {
+      // Eyes look in a different direction (±45 degrees from body)
+      const gazeVariation = (Math.random() - 0.5) * Math.PI / 2; // ±90 degrees max
+      return gazeVariation;
+    }
+  };
+
+  // Store gaze direction for this doll instance
+  const [gazeOffset] = useState(() => getGazeDirection());
+
   // Age-based scaling for different family member sizes
   const getAgeScale = () => {
     if (doll.dollType.id.includes('baby')) return 0.6; // Bebés más pequeños
@@ -137,30 +155,32 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
           </mesh>
         )}
 
-        {/* Eyes for geometric shapes - positioned on the front */}
-        {/* Left eye (white) */}
-        <mesh position={[-0.08, 0.25, 0.15]} castShadow>
-          <sphereGeometry args={[0.03, 8, 8]} />
-          <meshStandardMaterial color="#FFFFFF" />
-        </mesh>
-        
-        {/* Right eye (white) */}
-        <mesh position={[0.08, 0.25, 0.15]} castShadow>
-          <sphereGeometry args={[0.03, 8, 8]} />
-          <meshStandardMaterial color="#FFFFFF" />
-        </mesh>
+        {/* Eyes for geometric shapes - positioned on the front with independent gaze */}
+        <group rotation={[0, gazeOffset, 0]}>
+          {/* Left eye (white) */}
+          <mesh position={[-0.08, 0.25, 0.15]} castShadow>
+            <sphereGeometry args={[0.03, 8, 8]} />
+            <meshStandardMaterial color="#FFFFFF" />
+          </mesh>
+          
+          {/* Right eye (white) */}
+          <mesh position={[0.08, 0.25, 0.15]} castShadow>
+            <sphereGeometry args={[0.03, 8, 8]} />
+            <meshStandardMaterial color="#FFFFFF" />
+          </mesh>
 
-        {/* Left pupil (black) */}
-        <mesh position={[-0.08, 0.25, 0.18]} castShadow>
-          <sphereGeometry args={[0.015, 6, 6]} />
-          <meshStandardMaterial color="#000000" />
-        </mesh>
-        
-        {/* Right pupil (black) */}
-        <mesh position={[0.08, 0.25, 0.18]} castShadow>
-          <sphereGeometry args={[0.015, 6, 6]} />
-          <meshStandardMaterial color="#000000" />
-        </mesh>
+          {/* Left pupil (black) */}
+          <mesh position={[-0.08, 0.25, 0.18]} castShadow>
+            <sphereGeometry args={[0.015, 6, 6]} />
+            <meshStandardMaterial color="#000000" />
+          </mesh>
+          
+          {/* Right pupil (black) */}
+          <mesh position={[0.08, 0.25, 0.18]} castShadow>
+            <sphereGeometry args={[0.015, 6, 6]} />
+            <meshStandardMaterial color="#000000" />
+          </mesh>
+        </group>
 
         {/* Direction indicator for geometric shapes */}
         {isPlaced && (
@@ -224,30 +244,32 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         />
       </mesh>
 
-      {/* Eyes - positioned on the front of the head */}
-      {/* Left eye (white) */}
-      <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
-        <sphereGeometry args={[0.02, 8, 8]} />
-        <meshStandardMaterial color="#FFFFFF" />
-      </mesh>
-      
-      {/* Right eye (white) */}
-      <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
-        <sphereGeometry args={[0.02, 8, 8]} />
-        <meshStandardMaterial color="#FFFFFF" />
-      </mesh>
+      {/* Eyes - positioned on the front of the head with independent gaze */}
+      <group rotation={[0, gazeOffset, 0]}>
+        {/* Left eye (white) */}
+        <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
+          <sphereGeometry args={[0.02, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
+        
+        {/* Right eye (white) */}
+        <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.10]} castShadow>
+          <sphereGeometry args={[0.02, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" />
+        </mesh>
 
-      {/* Left pupil (black) */}
-      <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
-        <sphereGeometry args={[0.01, 6, 6]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
-      
-      {/* Right pupil (black) */}
-      <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
-        <sphereGeometry args={[0.01, 6, 6]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
+        {/* Left pupil (black) */}
+        <mesh position={[-0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
+          <sphereGeometry args={[0.01, 6, 6]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+        
+        {/* Right pupil (black) */}
+        <mesh position={[0.04, doll.dollType.id.includes('baby') ? 0.52 : 0.67, 0.12]} castShadow>
+          <sphereGeometry args={[0.01, 6, 6]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+      </group>
 
       {/* Arms */}
       <mesh position={[-0.25, 0.35, 0]} rotation={[0, 0, 0.3]} castShadow>
