@@ -102,10 +102,20 @@ This is a web-based 3D family constellation therapy application built with React
 - **Development Mode**: TSX for TypeScript execution
 - **Production Mode**: Node.js execution of bundled server
 
-## Changelog
+## Recent Changes
 
-Changelog:
-- June 20, 2025. Initial setup
+- **June 20, 2025**: Preparación completa para GitHub y Vercel
+  - README.md profesional con documentación completa
+  - Archivos de configuración para deploy (vercel.json, .env.example)
+  - Guías de contribución y changelog incluidas
+  - .gitignore optimizado para desarrollo web
+  - Bebés fallecidos redimensionados para mayor visibilidad (escala 0.8x)
+  - Aplicación lista para subir a repositorio público
+- **June 20, 2025**: Funcionalidad de exportación de imagen completada
+  - Botón verde para descargar PNG de constelaciones
+  - Nomenclatura automática con fecha y hora
+  - Documentación para uso terapéutico profesional
+- **June 20, 2025**: Setup inicial de aplicación de dinámicas sistémicas
 
 ## User Preferences
 
