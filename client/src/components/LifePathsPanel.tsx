@@ -134,13 +134,13 @@ export default function LifePathsPanel() {
       <div className="p-2 border-t border-blue-200 bg-slate-50/50 mb-16 md:mb-24">
         <div className="text-sm md:text-base text-slate-700 space-y-1 flex flex-col">
           <span className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
-            <Lightbulb className="w-4 h-4 text-blue-500" /> Proceso de la Técnica:
+            <Lightbulb className="w-4 h-4 text-blue-500" /> Metodología de los Caminos de Vida
           </span>
-          <span>1. Selecciona muñecos familiares de la biblioteca</span>
-          <span>2. Coloca el muñeco en el centro de la mesa</span>
-          <span>3. Levanta y deja caer naturalmente</span>
-          <span>4. Observa hacia qué dirección apuntan los pies</span>
-          <span>5. Analiza los patrones familiares revelados</span>
+          <span><strong>1. Selección</strong><br/>Elige el muñeco que representa a la persona desde la biblioteca de muñecos</span>
+          <span><strong>2. Caída Fenomenológica</strong><br/>El sistema coloca automática y aleatoriamente la figura en el lienzo</span>
+          <span><strong>3. Lectura de la Orientación</strong><br/>Observa hacia qué dirección apuntan y posición de los muñecos</span>
+          <span><strong>4. Análisis Sistémico</strong><br/>Analiza los patrones e interacciones revelados</span>
+          <span><strong>5. Exploración Terapéutica</strong><br/>Formula las preguntas clave para profundizar en el proceso</span>
         </div>
       </div>
     </div>
