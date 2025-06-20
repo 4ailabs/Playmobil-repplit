@@ -101,16 +101,19 @@ export default function DollLibrary() {
                     <div
                       key={dollType.id}
                       className={`
-                        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-200
+                        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 touch-target touch-feedback
                         ${draggedDoll?.dollType.id === dollType.id 
                           ? 'border-blue-400 bg-blue-50' 
-                          : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50'
+                          : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 active:bg-blue-100 active:border-blue-400'
                         }
                         ${hoveredDoll === dollType.id ? 'shadow-md' : 'shadow-sm'}
+                        min-h-[60px] min-w-[60px]
                       `}
                       onClick={() => handleDollSelect(dollType)}
                       onMouseEnter={() => setHoveredDoll(dollType.id)}
                       onMouseLeave={() => setHoveredDoll(null)}
+                      onTouchStart={() => setHoveredDoll(dollType.id)}
+                      onTouchEnd={() => setHoveredDoll(null)}
                     >
                       {/* Visual representation */}
                       <div className="flex flex-col items-center gap-2">

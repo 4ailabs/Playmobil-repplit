@@ -16,9 +16,17 @@ export default function TherapyApp() {
       {!isFullscreen && (
         <header className="bg-white/90 backdrop-blur-sm border-b border-blue-200 px-6 py-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800">Los Cuatro Caminos de Vida</h1>
-              <p className="text-sm text-slate-600 mt-1">Terapia con Muñecos 3D - Técnica de Dinámicas Sistémicas</p>
+            <div className="flex items-center space-x-4">
+              <img 
+                src="https://images.squarespace-cdn.com/content/v1/63937c55c3c2e84a13a3ede9/a279434a-f77d-4cf0-93f5-8528eb0aa100/CAAE2365-50D2-40DD-8CBC-104F7E0B2EE0.png?format=2500w" 
+                alt="Playworld Pro Logo" 
+                className="h-12 w-auto object-contain"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800">Los Cuatro Caminos de Vida</h1>
+                <p className="text-sm text-slate-600 mt-1">Terapia con Muñecos 3D - Técnica de Dinámicas Sistémicas</p>
+                <p className="text-xs text-blue-600 font-medium">Dr. Miguel Ojeda Rios • Playworld Pro</p>
+              </div>
             </div>
             <div className="text-right">
               <p className="text-sm text-slate-500">Norte: Migrante • Sur: Sufrimiento • Oeste: Deber • Este: Placer</p>
@@ -32,7 +40,7 @@ export default function TherapyApp() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Doll Library - ocultar en pantalla completa */}
         {!isFullscreen && (
-          <div className="w-80 bg-white/80 backdrop-blur-sm border-r border-blue-200 shadow-sm">
+          <div className="w-80 lg:w-80 md:w-72 sm:w-64 bg-white/80 backdrop-blur-sm border-r border-blue-200 shadow-sm">
             <DollLibrary />
           </div>
         )}
@@ -42,7 +50,7 @@ export default function TherapyApp() {
           {/* Botón de pantalla completa flotante */}
           <button
             onClick={toggleFullscreen}
-            className="absolute top-4 right-4 z-10 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+            className="absolute top-4 right-4 z-10 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-feedback min-h-12 min-w-12"
             title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
           >
             {isFullscreen ? (
@@ -78,7 +86,7 @@ export default function TherapyApp() {
 
         {/* Right Sidebar - Life Paths - ocultar en pantalla completa */}
         {!isFullscreen && (
-          <div className="w-80 bg-white/80 backdrop-blur-sm border-l border-blue-200 shadow-sm">
+          <div className="w-80 lg:w-80 md:w-72 sm:w-64 bg-white/80 backdrop-blur-sm border-l border-blue-200 shadow-sm">
             <LifePathsPanel />
           </div>
         )}

@@ -22,7 +22,7 @@ export default function InstructionsPanel() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg text-blue-900">
-            🎭 Dinámicas Sistémicas
+            🎭 Dinámicas Sistémicas - Playworld Pro
           </CardTitle>
           <Button
             onClick={() => setIsOpen(false)}

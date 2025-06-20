@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* iPad and touch device optimizations */
+@media (pointer: coarse) {
+  /* Larger touch targets for iPad */
+  button, .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text selection on touch */
+  * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Allow text selection only where needed */
+  input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+}
+
+/* Prevent zoom on double tap for iOS */
+@media screen and (max-device-width: 480px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+}
+
+/* iPad specific styling */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Optimize for iPad landscape and portrait */
+  .sidebar {
+    transition: transform 0.3s ease;
+  }
+  
+  /* Better touch feedback */
+  .touch-feedback:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
