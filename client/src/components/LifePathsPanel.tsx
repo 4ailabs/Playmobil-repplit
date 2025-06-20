@@ -36,15 +36,17 @@ export default function LifePathsPanel() {
             onClick={() => setSelectedLifePath(path)}
           >
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center justify-between">
+              <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">
+                  <span className="text-2xl md:text-3xl lg:text-4xl">
                     {pathIcons[path.id]}
                   </span>
-                  <span>{path.name}</span>
+                  <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
+                    {path.name}
+                  </span>
                 </div>
                 {selectedLifePath?.id === path.id && (
-                  <Badge variant="default" className="text-xs">
+                  <Badge variant={"default" as const} className="text-xs">
                     Seleccionado
                   </Badge>
                 )}
@@ -99,7 +101,7 @@ export default function LifePathsPanel() {
                     <p className="text-xs font-medium text-slate-700 mb-1">Motivaciones:</p>
                     <div className="flex flex-wrap gap-1">
                       {path.motivations.slice(0, 2).map((motivation, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={index} variant={"outline" as const} className="text-xs">
                           {motivation}
                         </Badge>
                       ))}
@@ -117,10 +119,10 @@ export default function LifePathsPanel() {
         <div className="p-4 border-t border-blue-200 bg-blue-50/50">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-lg">
+              <span className="text-2xl md:text-3xl lg:text-4xl">
                 {pathIcons[selectedLifePath.id]}
               </span>
-              <span className="text-sm font-medium text-slate-800">
+              <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
                 {selectedLifePath.name}
               </span>
             </div>
