@@ -48,8 +48,8 @@ export default function InstructionsPanel() {
         <div>
           <h4 className="font-semibold text-blue-800 mb-2">👁️ Mirada Realista:</h4>
           <p className="text-gray-700">
-            • 70% de los muñecos miran en la dirección del cuerpo<br/>
-            • 30% miran hacia otro lado (comportamiento humano natural)<br/>
+            • 50% de los muñecos miran en la dirección del cuerpo<br/>
+            • 50% miran hacia otro lado (comportamiento humano natural)<br/>
             • La flecha roja indica la orientación del cuerpo<br/>
             • Doble clic para rotar el cuerpo completo<br/>
             • Observa diferencias entre dirección corporal y mirada

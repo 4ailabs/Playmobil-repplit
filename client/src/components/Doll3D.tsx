@@ -75,8 +75,8 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
 
   // Calculate independent gaze direction
   const getGazeDirection = () => {
-    // 70% chance the gaze follows body direction, 30% chance it's independent
-    const followsBody = Math.random() > 0.3;
+    // 50% chance the gaze follows body direction, 50% chance it's independent
+    const followsBody = Math.random() > 0.5;
     
     if (followsBody) {
       // Eyes look in the same direction as body
