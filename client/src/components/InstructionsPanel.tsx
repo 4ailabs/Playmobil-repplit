@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { Shuffle, Eye, Trash2, Baby, Camera, Monitor, Compass, Lightbulb, X } from "lucide-react";
 
 export default function InstructionsPanel() {
   const [isOpen, setIsOpen] = useState(true);
@@ -21,22 +22,21 @@ export default function InstructionsPanel() {
     <Card className="fixed top-4 right-4 z-50 w-80 bg-white/95 backdrop-blur-sm border-blue-200 shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg text-blue-900">
-            🎭 Dinámicas Sistémicas - Playworld Pro
+          <CardTitle className="text-lg text-blue-900 flex items-center gap-2">
+            <Lightbulb className="w-6 h-6 text-blue-700" />
+            Dinámicas Sistémicas - Playworld Pro
           </CardTitle>
           <Button
             onClick={() => setIsOpen(false)}
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
+            className="h-8 w-auto px-3 py-1 bg-red-100 border border-red-300 text-red-700 font-semibold rounded hover:bg-red-200 transition-all text-xs"
           >
-            ✕
+            <X className="inline w-4 h-4 mr-1 align-middle" /> Ocultar
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🎲 Colocación Aleatoria:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Shuffle className="w-4 h-4 text-blue-500" /> Colocación Aleatoria:</h4>
           <p className="text-gray-700">
             • Selecciona un familiar de la biblioteca<br/>
             • ¡El muñeco cae automáticamente al azar en la mesa!<br/>
@@ -47,7 +47,7 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">👁️ Mirada Realista:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Eye className="w-4 h-4 text-blue-500" /> Mirada Realista:</h4>
           <p className="text-gray-700">
             • 50% de los muñecos miran en la dirección del cuerpo<br/>
             • 50% miran hacia otro lado (comportamiento humano natural)<br/>
@@ -58,16 +58,16 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🗑️ Eliminar (Compatible Mac):</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Trash2 className="w-4 h-4 text-blue-500" /> Eliminar (Compatible Mac):</h4>
           <p className="text-gray-700">
-            • Haz clic en un muñeco para seleccionarlo (aro rojo)<br/>
+            • Haz clic en un muñeco para seleccionarlo<br/>
             • Presiona Delete o Backspace para eliminarlo<br/>
             • Funciona en Mac, PC y todos los sistemas
           </p>
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">👼 Bebés Fallecidos:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Baby className="w-4 h-4 text-blue-500" /> Bebés Fallecidos:</h4>
           <p className="text-gray-700">
             • Representados con esferas etéreas y halo dorado<br/>
             • Honran abortos, óbitos y pérdidas tempranas<br/>
@@ -77,7 +77,7 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">📸 Exportar Imagen:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Camera className="w-4 h-4 text-blue-500" /> Exportar Imagen:</h4>
           <p className="text-gray-700">
             • Botón verde en esquina superior derecha<br/>
             • Descarga imagen PNG de la constelación actual<br/>
@@ -87,7 +87,7 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🖥️ Pantalla Completa:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Monitor className="w-4 h-4 text-blue-500" /> Pantalla Completa:</h4>
           <p className="text-gray-700">
             • Botón azul en esquina superior derecha<br/>
             • Oculta todas las barras laterales<br/>
@@ -97,7 +97,7 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2">🧭 Caminos de Vida:</h4>
+          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Compass className="w-4 h-4 text-blue-500" /> Caminos de Vida:</h4>
           <p className="text-gray-700">
             • <strong>N:</strong> Migrante - Búsqueda y exploración<br/>
             • <strong>S:</strong> Sufrimiento - Dolor y sanación<br/>
@@ -107,7 +107,7 @@ export default function InstructionsPanel() {
         </div>
 
         <div className="bg-blue-50 p-3 rounded-lg">
-          <h4 className="font-semibold text-blue-800 mb-1">💡 Metodología Auténtica:</h4>
+          <h4 className="font-semibold text-blue-800 mb-1 flex items-center gap-2"><Lightbulb className="w-4 h-4 text-blue-500" /> Metodología Auténtica:</h4>
           <p className="text-xs text-blue-700">
             La colocación aleatoria automática simula el proceso intuitivo 
             de las dinámicas sistémicas. Cada posición, dirección y 
