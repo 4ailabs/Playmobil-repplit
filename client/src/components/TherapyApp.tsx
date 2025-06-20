@@ -12,17 +12,14 @@ export default function TherapyApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const exportCanvasAsImage = () => {
-    // Find the Three.js canvas element
-    const canvas = document.querySelector('canvas');
+    const canvas = canvasRef.current;
     if (canvas) {
-      // Create download link
       const link = document.createElement('a');
       const date = new Date().toISOString().split('T')[0];
       const time = new Date().toLocaleTimeString().replace(/:/g, '-');
       link.download = `constelacion-familiar-${date}-${time}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      
       console.log('Imagen exportada exitosamente');
     } else {
       console.error('No se pudo encontrar el canvas para exportar');
@@ -98,6 +95,7 @@ export default function TherapyApp() {
           </div>
           
           <Canvas
+            ref={canvasRef}
             shadows
             camera={{
               position: [10, 8, 10],
@@ -110,7 +108,6 @@ export default function TherapyApp() {
               powerPreference: "high-performance"
             }}
           >
-            <color attach="background" args={["#f1f5f9"]} />
             <Suspense fallback={null}>
               <Scene3D />
             </Suspense>

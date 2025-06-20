@@ -7,7 +7,7 @@ import Doll3D from "./Doll3D";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 
 export default function Scene3D() {
-  const { camera } = useThree();
+  const { camera, gl } = useThree();
   const controlsRef = useRef<any>();
   const { placedDolls } = useTherapy();
 
@@ -16,6 +16,11 @@ export default function Scene3D() {
     camera.position.set(10, 8, 10);
     camera.lookAt(0, 0, 0);
   }, [camera]);
+
+  // Set background color
+  useEffect(() => {
+    gl.setClearColor(new THREE.Color("#f1f5f9"));
+  }, [gl]);
 
   return (
     <>
