@@ -220,7 +220,7 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         ref={groupRef}
         position={doll.position}
         rotation={doll.rotation}
-        scale={[scale * 0.5, scale * 0.5, scale * 0.5]} // Smaller size
+        scale={[scale * 0.8, scale * 0.8, scale * 0.8]} // Slightly smaller but visible
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onDoubleClick={handleDoubleClick}
@@ -228,40 +228,52 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         onPointerLeave={() => setHovered(false)}
       >
         {/* Ethereal sphere representing the spirit */}
-        <mesh position={[0, 0.3, 0]} castShadow>
-          <sphereGeometry args={[0.15, 16, 16]} />
+        <mesh position={[0, 0.4, 0]} castShadow>
+          <sphereGeometry args={[0.2, 16, 16]} />
           <meshStandardMaterial 
             color={dollColor} 
             transparent 
-            opacity={0.7}
-            emissive={dollColor.clone().multiplyScalar(0.2)}
+            opacity={0.8}
+            emissive={dollColor.clone().multiplyScalar(0.3)}
           />
         </mesh>
 
-        {/* Small halo above */}
-        <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.08, 0.12, 16]} />
+        {/* Larger halo above */}
+        <mesh position={[0, 0.7, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.12, 0.18, 16]} />
           <meshStandardMaterial 
             color="#FFD700" 
             transparent 
-            opacity={0.8}
+            opacity={0.9}
             emissive="#FFD700"
-            emissiveIntensity={0.3}
+            emissiveIntensity={0.4}
           />
         </mesh>
 
-        {/* Eyes - simple dots */}
+        {/* Eyes - larger and more visible */}
         <group rotation={[0, gazeOffset, 0]}>
           {/* Left eye */}
-          <mesh position={[-0.03, 0.32, 0.12]} castShadow>
-            <sphereGeometry args={[0.01, 6, 6]} />
-            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.9} />
+          <mesh position={[-0.05, 0.42, 0.18]} castShadow>
+            <sphereGeometry args={[0.015, 8, 8]} />
+            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.95} />
           </mesh>
           
           {/* Right eye */}
-          <mesh position={[0.03, 0.32, 0.12]} castShadow>
-            <sphereGeometry args={[0.01, 6, 6]} />
-            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.9} />
+          <mesh position={[0.05, 0.42, 0.18]} castShadow>
+            <sphereGeometry args={[0.015, 8, 8]} />
+            <meshStandardMaterial color="#FFFFFF" transparent opacity={0.95} />
+          </mesh>
+
+          {/* Left pupil */}
+          <mesh position={[-0.05, 0.42, 0.2]} castShadow>
+            <sphereGeometry args={[0.008, 6, 6]} />
+            <meshStandardMaterial color="#000000" transparent opacity={0.8} />
+          </mesh>
+          
+          {/* Right pupil */}
+          <mesh position={[0.05, 0.42, 0.2]} castShadow>
+            <sphereGeometry args={[0.008, 6, 6]} />
+            <meshStandardMaterial color="#000000" transparent opacity={0.8} />
           </mesh>
         </group>
 
@@ -269,15 +281,15 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
         {isPlaced && (
           <>
             {/* Direction arrow - softer color */}
-            <mesh position={[0, 0.6, 0.1]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-              <coneGeometry args={[0.03, 0.1, 3]} />
-              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.8} />
+            <mesh position={[0, 0.9, 0.15]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+              <coneGeometry args={[0.04, 0.12, 3]} />
+              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.9} />
             </mesh>
             
             {/* Direction line */}
-            <mesh position={[0, 0.6, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
-              <cylinderGeometry args={[0.015, 0.015, 0.1, 6]} />
-              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.8} />
+            <mesh position={[0, 0.9, 0.08]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.12, 6]} />
+              <meshBasicMaterial color="#FFB6C1" transparent opacity={0.9} />
             </mesh>
           </>
         )}
