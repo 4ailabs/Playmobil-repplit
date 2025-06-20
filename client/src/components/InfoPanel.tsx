@@ -17,7 +17,11 @@ export default function InfoPanel() {
     deleteConfiguration,
     savedConfigurations,
     isInfoPanelOpen,
-    toggleInfoPanel
+    toggleInfoPanel,
+    placedDolls,
+    selectedDollId,
+    setSelectedDollId,
+    updateDollLabel,
   } = useTherapy();
 
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -72,6 +76,22 @@ export default function InfoPanel() {
                 <p className="text-xs text-slate-600 mt-1">
                   {getAnalysis()}
                 </p>
+                {selectedDollId && (() => {
+                  const selectedDoll = placedDolls.find(d => d.id === selectedDollId);
+                  if (!selectedDoll) return null;
+                  return (
+                    <div className="mt-3">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">Nombre del muñeco seleccionado:</label>
+                      <input
+                        type="text"
+                        className="border rounded px-2 py-1 text-sm w-full"
+                        value={selectedDoll.label || ""}
+                        onChange={e => updateDollLabel(selectedDoll.id, e.target.value)}
+                        placeholder="(Opcional) Escribe un nombre o etiqueta"
+                      />
+                    </div>
+                  );
+                })()}
               </div>
             </div>
 

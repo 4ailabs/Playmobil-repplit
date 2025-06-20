@@ -13,6 +13,7 @@ export interface PlacedDoll {
   rotation: [number, number, number];
   lifePath: 'north' | 'south' | 'east' | 'west' | null;
   isDropped: boolean;
+  label?: string;
 }
 
 export interface LifePath {

@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { PlacedDoll } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
+import { Text } from "@react-three/drei";
 
 interface Doll3DProps {
   doll: PlacedDoll;
@@ -388,12 +389,27 @@ export default function Doll3D({ doll, isPlaced }: Doll3DProps) {
             <coneGeometry args={[0.05, 0.15, 3]} />
             <meshBasicMaterial color="#FF6B6B" />
           </mesh>
-          
           {/* Direction line */}
           <mesh position={[0, 0.8, 0.08]} rotation={[Math.PI / 2, 0, 0]}>
             <cylinderGeometry args={[0.02, 0.02, 0.15, 6]} />
             <meshBasicMaterial color="#FF6B6B" />
           </mesh>
+          {/* Etiqueta de nombre */}
+          {doll.label && (
+            <Text
+              position={[0.35, 0.85, 0]}
+              fontSize={0.18}
+              color="#374151"
+              anchorX="left"
+              anchorY="middle"
+              outlineColor="#fff"
+              outlineWidth={0.008}
+              maxWidth={2}
+              textAlign="left"
+            >
+              {doll.label}
+            </Text>
+          )}
         </>
       )}
 

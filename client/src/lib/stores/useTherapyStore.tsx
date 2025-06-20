@@ -33,6 +33,7 @@ interface TherapyState {
   loadConfiguration: (configId: string) => void;
   deleteConfiguration: (configId: string) => void;
   initializeFromStorage: () => void;
+  updateDollLabel: (dollId: string, label: string) => void;
   
   // Computed
   dollCount: () => number;
@@ -163,6 +164,14 @@ export const useTherapy = create<TherapyState>()(
     initializeFromStorage: () => {
       const savedConfigs = getLocalStorage('therapy-configurations') || [];
       set({ savedConfigurations: savedConfigs });
+    },
+    
+    updateDollLabel: (dollId: string, label: string) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll =>
+          doll.id === dollId ? { ...doll, label } : doll
+        )
+      }));
     },
     
     // Computed functions
