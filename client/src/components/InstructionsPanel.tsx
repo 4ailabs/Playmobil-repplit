@@ -94,6 +94,14 @@ export default function InstructionsPanel() {
             familiar sistémico. Analiza las distancias, orientaciones y 
             agrupaciones para comprender las dinámicas relacionales.
           </p>
+          <div className="mt-2 pt-2 border-t border-blue-200">
+            <p className="text-xs text-blue-600 font-medium">
+              Creado por Dr. Miguel Ojeda Rios
+            </p>
+            <p className="text-xs text-blue-500">
+              Playworld Pro - Optimizado para iPad
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
