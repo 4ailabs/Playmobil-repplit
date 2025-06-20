@@ -41,6 +41,7 @@ export default function InstructionsPanel() {
             • Selecciona un familiar de la biblioteca<br/>
             • ¡El muñeco cae automáticamente al azar en la mesa!<br/>
             • Posición y dirección espontáneas revelan dinámicas inconscientes<br/>
+            • Incluye bebés fallecidos para honrar miembros perdidos<br/>
             • Metodología auténtica de dinámicas sistémicas
           </p>
         </div>
@@ -62,6 +63,16 @@ export default function InstructionsPanel() {
             • Haz clic en un muñeco para seleccionarlo (aro rojo)<br/>
             • Presiona Delete o Backspace para eliminarlo<br/>
             • Funciona en Mac, PC y todos los sistemas
+          </p>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-blue-800 mb-2">👼 Bebés Fallecidos:</h4>
+          <p className="text-gray-700">
+            • Representados con esferas etéreas y halo dorado<br/>
+            • Honran abortos, óbitos y pérdidas tempranas<br/>
+            • Esenciales para completar el sistema familiar<br/>
+            • Ayudan a sanar dinámicas interrumpidas
           </p>
         </div>
 
