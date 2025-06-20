@@ -2,15 +2,16 @@ import { LIFE_PATHS } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Compass, Sword, Sun, Scale } from "lucide-react";
 
 export default function LifePathsPanel() {
   const { selectedLifePath, setSelectedLifePath } = useTherapy();
 
   const pathIcons = {
-    north: "🧭",
-    south: "⚔️", 
-    east: "🌅",
-    west: "⚖️"
+    north: <Compass className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-blue-700" />,
+    south: <Sword className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-red-700" />,
+    east: <Sun className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-yellow-500" />,
+    west: <Scale className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-amber-700" />,
   };
 
   return (
@@ -38,9 +39,7 @@ export default function LifePathsPanel() {
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl lg:text-4xl">
-                    {pathIcons[path.id]}
-                  </span>
+                  {pathIcons[path.id]}
                   <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
                     {path.name}
                   </span>
@@ -119,9 +118,7 @@ export default function LifePathsPanel() {
         <div className="p-4 border-t border-blue-200 bg-blue-50/50">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-2xl md:text-3xl lg:text-4xl">
-                {pathIcons[selectedLifePath.id]}
-              </span>
+              {pathIcons[selectedLifePath.id]}
               <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
                 {selectedLifePath.name}
               </span>
