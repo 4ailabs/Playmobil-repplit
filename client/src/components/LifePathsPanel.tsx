@@ -2,7 +2,7 @@ import { LIFE_PATHS } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Compass, Sword, Sun, Scale } from "lucide-react";
+import { Compass, Sword, Sun, Scale, Lightbulb } from "lucide-react";
 
 export default function LifePathsPanel() {
   const { selectedLifePath, setSelectedLifePath } = useTherapy();
@@ -131,14 +131,16 @@ export default function LifePathsPanel() {
       )}
 
       {/* Instructions */}
-      <div className="p-4 border-t border-blue-200 bg-slate-50/50">
-        <div className="text-xs text-slate-600 space-y-1">
-          <p>💡 <strong>Proceso de la Técnica:</strong></p>
-          <p>1. Selecciona muñecos familiares de la biblioteca</p>
-          <p>2. Coloca el muñeco en el centro de la mesa</p>
-          <p>3. Levanta y deja caer naturalmente</p>
-          <p>4. Observa hacia qué dirección apuntan los pies</p>
-          <p>5. Analiza los patrones familiares revelados</p>
+      <div className="p-4 border-t border-blue-200 bg-slate-50/50 mb-32 md:mb-40">
+        <div className="text-base md:text-lg text-slate-700 space-y-1 flex flex-col">
+          <span className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
+            <Lightbulb className="w-5 h-5 text-blue-500" /> Proceso de la Técnica:
+          </span>
+          <span>1. Selecciona muñecos familiares de la biblioteca</span>
+          <span>2. Coloca el muñeco en el centro de la mesa</span>
+          <span>3. Levanta y deja caer naturalmente</span>
+          <span>4. Observa hacia qué dirección apuntan los pies</span>
+          <span>5. Analiza los patrones familiares revelados</span>
         </div>
       </div>
     </div>
