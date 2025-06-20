@@ -65,17 +65,6 @@ export default function TherapyApp() {
         <div className="flex-1 relative">
           {/* Botones flotantes */}
           <div className="absolute top-4 right-4 z-10 flex flex-col gap-3">
-            {/* Botón de exportar imagen */}
-            <button
-              onClick={exportCanvasAsImage}
-              className="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 touch-feedback min-h-12 min-w-12"
-              title="Exportar imagen de la constelación"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-            </button>
-            
             {/* Botón de pantalla completa */}
             <button
               onClick={toggleFullscreen}

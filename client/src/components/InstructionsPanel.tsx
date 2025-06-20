@@ -47,17 +47,6 @@ export default function InstructionsPanel() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Eye className="w-4 h-4 text-blue-500" /> Mirada Realista:</h4>
-          <p className="text-gray-700">
-            • 50% de los muñecos miran en la dirección del cuerpo<br/>
-            • 50% miran hacia otro lado (comportamiento humano natural)<br/>
-            • La flecha roja indica la orientación del cuerpo<br/>
-            • Doble clic para rotar el cuerpo completo<br/>
-            • Observa diferencias entre dirección corporal y mirada
-          </p>
-        </div>
-
-        <div>
           <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Trash2 className="w-4 h-4 text-blue-500" /> Eliminar (Compatible Mac):</h4>
           <p className="text-gray-700">
             • Haz clic en un muñeco para seleccionarlo<br/>
@@ -73,26 +62,6 @@ export default function InstructionsPanel() {
             • Honran abortos, óbitos y pérdidas tempranas<br/>
             • Esenciales para completar el sistema familiar<br/>
             • Ayudan a sanar dinámicas interrumpidas
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Camera className="w-4 h-4 text-blue-500" /> Exportar Imagen:</h4>
-          <p className="text-gray-700">
-            • Botón verde en esquina superior derecha<br/>
-            • Descarga imagen PNG de la constelación actual<br/>
-            • Documentar sesiones para registros terapéuticos<br/>
-            • Archivo nombrado con fecha y hora automáticamente
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2"><Monitor className="w-4 h-4 text-blue-500" /> Pantalla Completa:</h4>
-          <p className="text-gray-700">
-            • Botón azul en esquina superior derecha<br/>
-            • Oculta todas las barras laterales<br/>
-            • Enfoque total en la sesión de terapia<br/>
-            • Ideal para presentaciones con pacientes
           </p>
         </div>
 
@@ -118,9 +87,6 @@ export default function InstructionsPanel() {
           <div className="mt-2 pt-2 border-t border-blue-200">
             <p className="text-xs text-blue-600 font-medium">
               Creado por Dr. Miguel Ojeda Rios
-            </p>
-            <p className="text-xs text-blue-500">
-              Playworld Pro - Optimizado para iPad
             </p>
           </div>
         </div>
