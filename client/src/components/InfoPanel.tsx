@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { 
   Trash2, Save, FolderOpen, BarChart3, Users, Settings, Download, Link2, FileText, Smile,
   Meh, Laugh, Frown, Angry, AlertTriangle, Users2, Heart, AlertCircle, Minus,
-  Circle, CheckCircle2
+  Circle, CheckCircle2, Image as ImageIcon, Type
 } from "lucide-react";
 import { DollRelationship, RelationshipType } from "../lib/types";
+import { IMAGE_CARD_URLS, WORD_CARD_DATA } from "../lib/ohCardsConstants";
 
 interface InfoPanelProps {
   onExportImage?: () => void;
@@ -37,10 +38,16 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
     updateDollEmotion,
     addDollRelationship,
     removeDollRelationship,
+    updateDollOHCard,
+    setDollNeedingOHCard,
   } = useTherapy();
 
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
+  const [ohCardPreviewOpen, setOhCardPreviewOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'image' | 'word' | 'both'>('both');
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [previewWord, setPreviewWord] = useState<string | null>(null);
   const [configName, setConfigName] = useState("");
   const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false);
   const [selectedTargetId, setSelectedTargetId] = useState<string>("");
@@ -255,6 +262,168 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
                       />
                     </div>
                     
+                    {/* OH Cards */}
+                    <div className="md:col-span-2 lg:col-span-4 border-t border-purple-200 pt-3 mt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-semibold text-purple-900 flex items-center gap-1.5">
+                          <ImageIcon className="w-3 h-3" />
+                          OH Cards Asignadas
+                        </label>
+                        {!selectedDoll.ohCardImage || !selectedDoll.ohCardWord ? (
+                          <button
+                            onClick={() => setDollNeedingOHCard(selectedDoll.id)}
+                            className="text-xs px-2 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-md transition-colors"
+                          >
+                            Seleccionar OH Card
+                          </button>
+                        ) : (
+                          <span className="text-xs text-gray-500 italic">Asignada (no modificable)</span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {/* Imagen OH Card - Solo lectura si ya está asignada */}
+                        <div>
+                          <label className="block text-xs text-purple-700 mb-1.5">Imagen OH Card</label>
+                          {selectedDoll.ohCardImage && selectedDoll.ohCardWord ? (
+                            <div className="w-full h-9 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-xs text-gray-600 flex items-center gap-2">
+                              <img 
+                                src={selectedDoll.ohCardImage} 
+                                alt="OH Card" 
+                                className="w-6 h-8 object-cover rounded"
+                              />
+                              <span>Asignada (no modificable)</span>
+                            </div>
+                          ) : (
+                            <Select
+                              value={selectedDoll.ohCardImage || "__none__"}
+                              onValueChange={(value) => 
+                                updateDollOHCard(selectedDoll.id, value === "__none__" ? undefined : value, selectedDoll.ohCardWord)
+                              }
+                            >
+                            <SelectTrigger className="w-full h-9 text-sm">
+                              <SelectValue placeholder="Sin imagen asignada">
+                                {selectedDoll.ohCardImage ? (
+                                  <div className="flex items-center gap-2">
+                                    <img 
+                                      src={selectedDoll.ohCardImage} 
+                                      alt="OH Card" 
+                                      className="w-6 h-8 object-cover rounded"
+                                    />
+                                    <span>Imagen asignada</span>
+                                  </div>
+                                ) : (
+                                  "Sin imagen asignada"
+                                )}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent className="max-h-[300px]">
+                              <SelectItem value="__none__">Sin imagen</SelectItem>
+                              {IMAGE_CARD_URLS.map((url, idx) => (
+                                <SelectItem key={idx} value={url}>
+                                  <div className="flex items-center gap-2">
+                                    <img 
+                                      src={url} 
+                                      alt={`OH Card ${idx + 1}`} 
+                                      className="w-8 h-12 object-cover rounded"
+                                    />
+                                    <span>Imagen {idx + 1}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+                        
+                        {/* Palabra OH Card - Solo lectura si ya está asignada */}
+                        <div>
+                          <label className="block text-xs text-purple-700 mb-1.5">Palabra OH Card</label>
+                          {selectedDoll.ohCardImage && selectedDoll.ohCardWord ? (
+                            <div className="w-full h-9 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-xs text-gray-600 flex items-center">
+                              {selectedDoll.ohCardWord} (no modificable)
+                            </div>
+                          ) : (
+                            <Select
+                              value={selectedDoll.ohCardWord || "__none__"}
+                              onValueChange={(value) => 
+                                updateDollOHCard(selectedDoll.id, selectedDoll.ohCardImage, value === "__none__" ? undefined : value)
+                              }
+                            >
+                              <SelectTrigger className="w-full h-9 text-sm">
+                                <SelectValue placeholder="Sin palabra asignada">
+                                  {selectedDoll.ohCardWord || "Sin palabra asignada"}
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent className="max-h-[300px]">
+                                <SelectItem value="__none__">Sin palabra</SelectItem>
+                                {WORD_CARD_DATA.map((word, idx) => (
+                                  <SelectItem key={idx} value={word}>
+                                    {word}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+                        
+                        {/* Vista previa del par asignado */}
+                        {(selectedDoll.ohCardImage || selectedDoll.ohCardWord) && (
+                          <div className="md:col-span-2 flex items-center gap-3 p-2 bg-purple-50 rounded-md border border-purple-200">
+                            {selectedDoll.ohCardImage && (
+                              <button
+                                onClick={() => {
+                                  setPreviewImageUrl(selectedDoll.ohCardImage!);
+                                  setPreviewWord(selectedDoll.ohCardWord || null);
+                                  setPreviewMode('image');
+                                  setOhCardPreviewOpen(true);
+                                }}
+                                className="relative group cursor-pointer hover:scale-105 transition-transform"
+                                title="Haz clic para ver imagen en grande"
+                              >
+                                <img 
+                                  src={selectedDoll.ohCardImage} 
+                                  alt="OH Card" 
+                                  className="w-12 h-16 object-cover rounded border-2 border-purple-300 group-hover:border-purple-500 transition-colors"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded transition-colors flex items-center justify-center">
+                                  <ImageIcon className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                              </button>
+                            )}
+                            {selectedDoll.ohCardWord && (
+                              <button
+                                onClick={() => {
+                                  setPreviewImageUrl(selectedDoll.ohCardImage || null);
+                                  setPreviewWord(selectedDoll.ohCardWord);
+                                  setPreviewMode('word');
+                                  setOhCardPreviewOpen(true);
+                                }}
+                                className="flex-1 group cursor-pointer hover:bg-purple-100 rounded p-2 transition-colors"
+                                title="Haz clic para ver palabra en grande"
+                              >
+                                <div className="text-xs text-purple-600 font-medium">Palabra:</div>
+                                <div className="text-sm font-bold text-purple-900 group-hover:text-purple-700">{selectedDoll.ohCardWord}</div>
+                              </button>
+                            )}
+                            {(selectedDoll.ohCardImage && selectedDoll.ohCardWord) && (
+                              <button
+                                onClick={() => {
+                                  setPreviewImageUrl(selectedDoll.ohCardImage!);
+                                  setPreviewWord(selectedDoll.ohCardWord!);
+                                  setPreviewMode('both');
+                                  setOhCardPreviewOpen(true);
+                                }}
+                                className="px-3 py-1.5 text-xs bg-purple-200 hover:bg-purple-300 text-purple-800 rounded-md transition-colors font-medium"
+                                title="Ver imagen y palabra juntas"
+                              >
+                                Ver juntas
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
                     {/* Conexiones */}
                     <div className="md:col-span-2 lg:col-span-4">
                       <div className="flex items-center justify-between mb-2">
@@ -405,6 +574,117 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
           })()}
         </div>
       </CardContent>
+
+      {/* Modal para ver OH Card en grande */}
+      <Dialog open={ohCardPreviewOpen} onOpenChange={setOhCardPreviewOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0 border-b">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl">Vista ampliada de OH Card</DialogTitle>
+              <div className="flex gap-2">
+                {previewImageUrl && (
+                  <Button
+                    variant={previewMode === 'image' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setPreviewMode('image')}
+                  >
+                    <ImageIcon className="w-4 h-4 mr-1" />
+                    Imagen
+                  </Button>
+                )}
+                {previewWord && (
+                  <Button
+                    variant={previewMode === 'word' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setPreviewMode('word')}
+                  >
+                    <Type className="w-4 h-4 mr-1" />
+                    Palabra
+                  </Button>
+                )}
+                {previewImageUrl && previewWord && (
+                  <Button
+                    variant={previewMode === 'both' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setPreviewMode('both')}
+                  >
+                    <ImageIcon className="w-4 h-4 mr-1" />
+                    <Type className="w-4 h-4 mr-1" />
+                    Juntas
+                  </Button>
+                )}
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto px-6 pb-6 flex items-center justify-center bg-gradient-to-br from-gray-50 to-purple-50">
+            {previewMode === 'image' && previewImageUrl && (
+              <div className="w-full flex items-center justify-center">
+                <div className="relative w-full max-w-md aspect-[3/4] bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  <img 
+                    src={previewImageUrl} 
+                    alt="OH Card ampliada" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
+            {previewMode === 'word' && previewWord && (
+              <div className="w-full flex items-center justify-center">
+                <div className="relative w-full max-w-md aspect-[3/4] flex items-center justify-center bg-white rounded-2xl shadow-2xl">
+                  {/* Palabra en los cuatro lados */}
+                  <span className="absolute top-[3.5%] left-1/2 -translate-x-1/2 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider">
+                    {previewWord}
+                  </span>
+                  <span className="absolute bottom-[3.5%] left-1/2 -translate-x-1/2 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider">
+                    {previewWord}
+                  </span>
+                  <span className="absolute left-[3.5%] top-1/2 -translate-y-1/2 -rotate-90 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider whitespace-nowrap">
+                    {previewWord}
+                  </span>
+                  <span className="absolute right-[3.5%] top-1/2 -translate-y-1/2 rotate-90 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider whitespace-nowrap">
+                    {previewWord}
+                  </span>
+                  {/* Marco rojo delgado - siempre presente cuando hay palabra */}
+                  <div 
+                    className="absolute top-[10%] left-[10%] w-[80%] h-[80%] rounded-lg bg-white"
+                    style={{ border: '2.5px solid #D32F2F' }}
+                  ></div>
+                </div>
+              </div>
+            )}
+            {previewMode === 'both' && previewImageUrl && previewWord && (
+              <div className="w-full flex items-center justify-center">
+                <div className="relative w-full max-w-md aspect-[3/4] flex items-center justify-center bg-white rounded-2xl shadow-2xl">
+                  {/* Palabra en los cuatro lados */}
+                  <span className="absolute top-[3.5%] left-1/2 -translate-x-1/2 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider">
+                    {previewWord}
+                  </span>
+                  <span className="absolute bottom-[3.5%] left-1/2 -translate-x-1/2 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider">
+                    {previewWord}
+                  </span>
+                  <span className="absolute left-[3.5%] top-1/2 -translate-y-1/2 -rotate-90 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider whitespace-nowrap">
+                    {previewWord}
+                  </span>
+                  <span className="absolute right-[3.5%] top-1/2 -translate-y-1/2 rotate-90 text-[#402E32] font-bold text-base md:text-lg lg:text-xl tracking-wider whitespace-nowrap">
+                    {previewWord}
+                  </span>
+                  {/* Marco rojo delgado con la imagen */}
+                  <div 
+                    className="absolute top-[10%] left-[10%] w-[80%] h-[80%] rounded-lg bg-white flex items-center justify-center overflow-hidden"
+                    style={{ border: '2.5px solid #D32F2F' }}
+                  >
+                    <img 
+                      src={previewImageUrl} 
+                      alt="OH Card" 
+                      className="w-[98%] h-[98%] object-contain rounded-md"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

@@ -10,8 +10,9 @@ import { logger } from "../lib/logger";
 import { useKeyboardDelete } from "../hooks/useKeyboardDelete";
 import { useIsMobile } from "../hooks/use-is-mobile";
 import { MobileDrawer } from "./MobileDrawer";
-import { Compass, HeartCrack, Scale, Sun, Maximize2, Minimize2, X, Menu, BookOpen } from "lucide-react";
+import { Compass, HeartCrack, Scale, Sun, Maximize2, Minimize2, X, Menu, BookOpen, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import DollOHCardSelector from "./DollOHCardSelector";
 
 // Componente interno para acceder al renderer de Three.js
 function CanvasExporter({ onExportReady }: { onExportReady: (exportFn: () => void) => void }) {
@@ -186,7 +187,7 @@ function CanvasExporter({ onExportReady }: { onExportReady: (exportFn: () => voi
 }
 
 export default function TherapyApp() {
-  const { isFullscreen, toggleFullscreen } = useTherapy();
+  const { isFullscreen, toggleFullscreen, dollNeedingOHCard, placedDolls, setDollNeedingOHCard } = useTherapy();
   const exportFnRef = useRef<(() => void) | null>(null);
   const isMobile = useIsMobile();
   const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
@@ -216,6 +217,7 @@ export default function TherapyApp() {
       setRightDrawerOpen(false);
     }
   }, [isFullscreen]);
+
 
   return (
     <div className="w-full h-screen flex flex-col bg-gradient-to-br from-blue-50 to-slate-100">
@@ -382,6 +384,21 @@ export default function TherapyApp() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Doll OH Card Selector - Modal para seleccionar OH Card individual */}
+      {dollNeedingOHCard && (() => {
+        const doll = placedDolls.find(d => d.id === dollNeedingOHCard);
+        if (!doll) return null;
+        return (
+          <DollOHCardSelector
+            dollId={doll.id}
+            dollName={doll.label || doll.dollType.name}
+            currentImage={doll.ohCardImage}
+            currentWord={doll.ohCardWord}
+            onComplete={() => setDollNeedingOHCard(null)}
+          />
+        );
+      })()}
     </div>
   );
 }

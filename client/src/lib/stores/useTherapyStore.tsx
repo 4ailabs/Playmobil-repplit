@@ -18,6 +18,13 @@ interface TherapyState {
   selectedDollId: string | null;
   isFullscreen: boolean;
   
+  // OH Cards state
+  selectedOHCardImages: string[];
+  selectedOHCardWords: string[];
+  ohCardsAssigned: number; // Contador de pares asignados
+  dollNeedingOHCard: string | null; // ID del muñeco que necesita seleccionar OH Card
+  autoAssignOHCards: boolean; // Si se debe asignar automáticamente OH Cards al colocar muñecos
+  
   // Actions
   addDoll: (doll: PlacedDoll) => void;
   removeDoll: (dollId: string) => void;
@@ -41,6 +48,15 @@ interface TherapyState {
   addDollRelationship: (dollId: string, relationship: import("../types").DollRelationship) => void;
   removeDollRelationship: (dollId: string, targetId: string) => void;
   
+  // OH Cards actions
+  setSelectedOHCardImages: (images: string[]) => void;
+  setSelectedOHCardWords: (words: string[]) => void;
+  assignOHCardPair: (dollId: string) => void;
+  updateDollOHCard: (dollId: string, image: string | undefined, word: string | undefined) => void;
+  resetOHCards: () => void;
+  setDollNeedingOHCard: (dollId: string | null) => void;
+  setAutoAssignOHCards: (enabled: boolean) => void;
+  
   // Computed
   dollCount: () => number;
   getAnalysis: () => string;
@@ -58,6 +74,11 @@ export const useTherapy = create<TherapyState>()(
     savedConfigurations: [],
     selectedDollId: null,
     isFullscreen: false,
+    selectedOHCardImages: [],
+    selectedOHCardWords: [],
+    ohCardsAssigned: 0,
+    dollNeedingOHCard: null,
+    autoAssignOHCards: false, // Por defecto desactivado
     
     // Actions
     addDoll: (doll: PlacedDoll) => {
@@ -207,6 +228,12 @@ export const useTherapy = create<TherapyState>()(
         const validatedConfigs = validateSavedConfigurations(savedConfigs);
         set({ savedConfigurations: validatedConfigs });
         logger.debug('Configuraciones inicializadas desde localStorage:', validatedConfigs.length, 'válidas');
+        
+        // Cargar preferencia de auto-asignación de OH Cards
+        const autoAssign = getLocalStorage<boolean>('ohcards-auto-assign');
+        if (autoAssign !== null) {
+          set({ autoAssignOHCards: autoAssign });
+        }
       } catch (error) {
         logger.errorWithContext('Error al inicializar desde localStorage', error);
         set({ savedConfigurations: [] });
@@ -264,6 +291,84 @@ export const useTherapy = create<TherapyState>()(
           return doll;
         })
       }));
+    },
+    
+    // OH Cards actions
+    setSelectedOHCardImages: (images: string[]) => {
+      set({ selectedOHCardImages: images, ohCardsAssigned: 0 });
+    },
+    
+    setSelectedOHCardWords: (words: string[]) => {
+      set({ selectedOHCardWords: words });
+    },
+    
+    assignOHCardPair: (dollId: string) => {
+      const { selectedOHCardImages, selectedOHCardWords, ohCardsAssigned } = get();
+      
+      // Verificar que hay imágenes y palabras disponibles
+      if (selectedOHCardImages.length === 0 || selectedOHCardWords.length === 0) {
+        logger.debug('No hay OH Cards seleccionadas para asignar');
+        return;
+      }
+      
+      // Asignar el siguiente par disponible
+      const pairIndex = ohCardsAssigned;
+      if (pairIndex < selectedOHCardImages.length && pairIndex < selectedOHCardWords.length) {
+        const image = selectedOHCardImages[pairIndex];
+        const word = selectedOHCardWords[pairIndex];
+        
+        set((state) => ({
+          placedDolls: state.placedDolls.map(doll =>
+            doll.id === dollId 
+              ? { ...doll, ohCardImage: image, ohCardWord: word }
+              : doll
+          ),
+          ohCardsAssigned: state.ohCardsAssigned + 1
+        }));
+        
+        logger.debug(`OH Card asignado al muñeco ${dollId}: imagen ${pairIndex + 1}, palabra "${word}"`);
+      } else {
+        logger.warn('No hay más pares de OH Cards disponibles para asignar');
+      }
+    },
+    
+    updateDollOHCard: (dollId: string, image: string | undefined, word: string | undefined) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll =>
+          doll.id === dollId 
+            ? { ...doll, ohCardImage: image, ohCardWord: word }
+            : doll
+        ),
+        dollNeedingOHCard: state.dollNeedingOHCard === dollId ? null : state.dollNeedingOHCard
+      }));
+    },
+    
+    resetOHCards: () => {
+      set({ 
+        selectedOHCardImages: [], 
+        selectedOHCardWords: [], 
+        ohCardsAssigned: 0,
+        dollNeedingOHCard: null,
+        placedDolls: get().placedDolls.map(doll => ({
+          ...doll,
+          ohCardImage: undefined,
+          ohCardWord: undefined
+        }))
+      });
+    },
+    
+    setDollNeedingOHCard: (dollId: string | null) => {
+      set({ dollNeedingOHCard: dollId });
+    },
+    
+    setAutoAssignOHCards: (enabled: boolean) => {
+      set({ autoAssignOHCards: enabled });
+      // Guardar preferencia en localStorage
+      try {
+        setLocalStorage('ohcards-auto-assign', enabled);
+      } catch (error) {
+        logger.errorWithContext('Error guardando preferencia de auto-asignación', error);
+      }
     },
     
     // Computed functions

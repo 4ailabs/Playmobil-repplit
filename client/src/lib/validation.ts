@@ -48,6 +48,8 @@ const placedDollSchema = z.object({
   relationships: z.array(dollRelationshipSchema).optional(),
   emotion: z.enum(['neutral', 'happy', 'sad', 'angry', 'anxious']).optional(),
   notes: z.string().optional(),
+  ohCardImage: z.string().url().optional(),
+  ohCardWord: z.string().optional(),
 });
 
 // Esquema para LifePath

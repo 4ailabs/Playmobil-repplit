@@ -25,6 +25,8 @@ export interface PlacedDoll {
   relationships?: DollRelationship[]; // Conexiones con otros muñecos
   emotion?: 'neutral' | 'happy' | 'sad' | 'angry' | 'anxious'; // Estado emocional
   notes?: string; // Notas expandibles
+  ohCardImage?: string; // URL de la imagen OH Card asignada
+  ohCardWord?: string; // Palabra OH Card asignada
 }
 
 export interface LifePath {
