@@ -5,9 +5,20 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { Trash2, Save, FolderOpen, BarChart3, Users, Settings } from "lucide-react";
+import { Textarea } from "./ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { 
+  Trash2, Save, FolderOpen, BarChart3, Users, Settings, Download, Link2, FileText, Smile,
+  Meh, Laugh, Frown, Angry, AlertTriangle, Users2, Heart, AlertCircle, Minus,
+  Circle, CheckCircle2
+} from "lucide-react";
+import { DollRelationship, RelationshipType } from "../lib/types";
 
-export default function InfoPanel() {
+interface InfoPanelProps {
+  onExportImage?: () => void;
+}
+
+export default function InfoPanel({ onExportImage }: InfoPanelProps) {
   const {
     dollCount,
     getAnalysis,
@@ -22,11 +33,18 @@ export default function InfoPanel() {
     selectedDollId,
     setSelectedDollId,
     updateDollLabel,
+    updateDollNotes,
+    updateDollEmotion,
+    addDollRelationship,
+    removeDollRelationship,
   } = useTherapy();
 
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [loadDialogOpen, setLoadDialogOpen] = useState(false);
   const [configName, setConfigName] = useState("");
+  const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false);
+  const [selectedTargetId, setSelectedTargetId] = useState<string>("");
+  const [selectedRelationshipType, setSelectedRelationshipType] = useState<RelationshipType>("family");
 
   const handleSave = () => {
     if (configName.trim()) {
@@ -57,74 +75,334 @@ export default function InfoPanel() {
   }
 
   return (
-    <Card className="fixed bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm shadow-lg border border-blue-200">
+    <Card className="fixed bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md shadow-xl border border-blue-200/50 animate-in slide-in-from-bottom-4 duration-300 max-w-7xl mx-auto">
       <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          {/* Analysis Section */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-600" />
-              <div>
+        <div className="flex flex-col gap-4">
+          {/* Primera fila: Estadísticas y acciones principales */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Estadísticas */}
+            <div className="flex items-center gap-3 bg-gradient-to-br from-blue-50 to-blue-100/50 px-4 py-2 rounded-lg border border-blue-200/50">
+              <div className="p-2 bg-blue-500 rounded-lg flex-shrink-0">
+                <Users className="w-4 h-4 text-white" />
+              </div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-slate-800">
-                    Muñecos en mesa:
+                  <span className="text-sm font-semibold text-slate-800">
+                    Muñecos:
                   </span>
-                  <Badge variant="secondary" className="text-sm">
+                  <Badge variant="secondary" className="text-sm font-bold bg-blue-500 text-white">
                     {dollCount()}
                   </Badge>
                 </div>
-                <p className="text-xs text-slate-600 mt-1">
+                <p className="text-xs text-slate-600 mt-0.5 line-clamp-1">
                   {getAnalysis()}
                 </p>
-                {selectedDollId && (() => {
-                  const selectedDoll = placedDolls.find(d => d.id === selectedDollId);
-                  if (!selectedDoll) return null;
-                  return (
-                    <div className="mt-3">
-                      <label className="block text-xs font-medium text-slate-700 mb-1">Nombre del muñeco seleccionado:</label>
+              </div>
+            </div>
+
+            {/* Estado y acciones */}
+            <div className="flex items-center gap-3">
+              {/* Estado */}
+              <div className="hidden md:flex items-center gap-2 bg-gradient-to-br from-green-50 to-green-100/50 px-3 py-2 rounded-lg border border-green-200/50">
+                <div className="p-1.5 bg-green-500 rounded">
+                  <BarChart3 className="w-3 h-3 text-white" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-semibold text-slate-700">Configs: {savedConfigurations.length}</div>
+                  <div className="text-slate-600 flex items-center gap-1">
+                    {dollCount() > 0 ? (
+                      <>
+                        <CheckCircle2 className="w-2.5 h-2.5 text-green-600" />
+                        <span>Activa</span>
+                      </>
+                    ) : (
+                      <>
+                        <Circle className="w-2.5 h-2.5 text-gray-400" />
+                        <span>Preparando</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Botones de acción */}
+              <div className="flex items-center gap-2">
+                {onExportImage && (
+                  <Button
+                    onClick={() => {
+                      if (onExportImage) {
+                        onExportImage();
+                      } else {
+                        alert('La función de exportación no está disponible. Por favor, recarga la página.');
+                      }
+                    }}
+                    size="sm"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg transition-all"
+                    title="Exportar imagen de la constelación familiar"
+                  >
+                    <Download className="w-4 h-4 mr-1.5" />
+                    <span className="hidden sm:inline">Exportar</span>
+                  </Button>
+                )}
+                <Button
+                  onClick={clearTable}
+                  size="sm"
+                  variant="outline"
+                  className="text-red-600 border-red-300 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4 mr-1.5" />
+                  <span className="hidden sm:inline">Limpiar</span>
+                </Button>
+                <Button
+                  onClick={toggleInfoPanel}
+                  className="h-9 w-9 p-0 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700"
+                  aria-label="Ocultar panel"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Segunda fila: Panel del muñeco seleccionado */}
+          {selectedDollId && (() => {
+            const selectedDoll = placedDolls.find(d => d.id === selectedDollId);
+            if (!selectedDoll) return null;
+            const otherDolls = placedDolls.filter(d => d.id !== selectedDollId);
+            
+            return (
+              <div className="border-t border-purple-200 pt-4">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 px-4 py-3 rounded-lg border border-purple-200/50">
+                  <h3 className="text-sm font-bold text-purple-900 mb-3 flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Muñeco Seleccionado: {selectedDoll.label || selectedDoll.dollType.name}
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {/* Nombre */}
+                    <div>
+                      <label className="block text-xs font-semibold text-purple-900 mb-1.5 flex items-center gap-1.5">
+                        <FileText className="w-3 h-3" />
+                        Nombre
+                      </label>
                       <input
                         type="text"
-                        className="border rounded px-2 py-1 text-sm w-full"
+                        className="border border-purple-200 rounded-md px-3 py-1.5 text-sm w-full bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                         value={selectedDoll.label || ""}
                         onChange={e => updateDollLabel(selectedDoll.id, e.target.value)}
-                        placeholder="(Opcional) Escribe un nombre o etiqueta"
+                        placeholder="Ej: Papá, Mamá..."
                       />
                     </div>
-                  );
-                })()}
+                    
+                    {/* Emoción/Estado */}
+                    <div>
+                      <label className="block text-xs font-semibold text-purple-900 mb-1.5 flex items-center gap-1.5">
+                        <Smile className="w-3 h-3" />
+                        Emoción
+                      </label>
+                      <Select
+                        value={selectedDoll.emotion || "neutral"}
+                        onValueChange={(value: 'neutral' | 'happy' | 'sad' | 'angry' | 'anxious') => 
+                          updateDollEmotion(selectedDoll.id, value)
+                        }
+                      >
+                        <SelectTrigger className="w-full h-9 text-sm">
+                          <SelectValue>
+                            {selectedDoll.emotion === 'happy' && <Laugh className="w-4 h-4" />}
+                            {selectedDoll.emotion === 'sad' && <Frown className="w-4 h-4" />}
+                            {selectedDoll.emotion === 'angry' && <Angry className="w-4 h-4" />}
+                            {selectedDoll.emotion === 'anxious' && <AlertTriangle className="w-4 h-4" />}
+                            {(!selectedDoll.emotion || selectedDoll.emotion === 'neutral') && <Meh className="w-4 h-4" />}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="neutral" className="flex items-center gap-2">
+                            <Meh className="w-4 h-4" />
+                            <span>Neutral</span>
+                          </SelectItem>
+                          <SelectItem value="happy" className="flex items-center gap-2">
+                            <Laugh className="w-4 h-4" />
+                            <span>Feliz</span>
+                          </SelectItem>
+                          <SelectItem value="sad" className="flex items-center gap-2">
+                            <Frown className="w-4 h-4" />
+                            <span>Triste</span>
+                          </SelectItem>
+                          <SelectItem value="angry" className="flex items-center gap-2">
+                            <Angry className="w-4 h-4" />
+                            <span>Enojado</span>
+                          </SelectItem>
+                          <SelectItem value="anxious" className="flex items-center gap-2">
+                            <AlertTriangle className="w-4 h-4" />
+                            <span>Ansioso</span>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Notas */}
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-semibold text-purple-900 mb-1.5 flex items-center gap-1.5">
+                        <FileText className="w-3 h-3" />
+                        Notas
+                      </label>
+                      <Textarea
+                        className="border border-purple-200 rounded-md px-3 py-2 text-xs w-full bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+                        rows={2}
+                        value={selectedDoll.notes || ""}
+                        onChange={e => updateDollNotes(selectedDoll.id, e.target.value)}
+                        placeholder="Notas sobre este muñeco..."
+                      />
+                    </div>
+                    
+                    {/* Conexiones */}
+                    <div className="md:col-span-2 lg:col-span-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-semibold text-purple-900 flex items-center gap-1.5">
+                          <Link2 className="w-3 h-3" />
+                          Conexiones
+                        </label>
+                        <Dialog open={relationshipDialogOpen} onOpenChange={setRelationshipDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline" className="h-7 text-xs px-2">
+                              + Agregar
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Agregar Conexión</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Conectar con:</label>
+                                <Select value={selectedTargetId} onValueChange={setSelectedTargetId}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Selecciona un muñeco" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {otherDolls.map(doll => (
+                                      <SelectItem key={doll.id} value={doll.id}>
+                                        {doll.label || doll.dollType.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium mb-2 block">Tipo de relación:</label>
+                                <Select value={selectedRelationshipType} onValueChange={(value: RelationshipType) => setSelectedRelationshipType(value)}>
+                                  <SelectTrigger>
+                                    <SelectValue>
+                                      {selectedRelationshipType === 'family' && (
+                                        <div className="flex items-center gap-2">
+                                          <Users2 className="w-4 h-4 text-blue-600" />
+                                          <span>Familiar</span>
+                                        </div>
+                                      )}
+                                      {selectedRelationshipType === 'strong' && (
+                                        <div className="flex items-center gap-2">
+                                          <Heart className="w-4 h-4 text-green-600" />
+                                          <span>Conexión Fuerte</span>
+                                        </div>
+                                      )}
+                                      {selectedRelationshipType === 'tension' && (
+                                        <div className="flex items-center gap-2">
+                                          <AlertTriangle className="w-4 h-4 text-amber-600" />
+                                          <span>Tensión</span>
+                                        </div>
+                                      )}
+                                      {selectedRelationshipType === 'conflict' && (
+                                        <div className="flex items-center gap-2">
+                                          <AlertCircle className="w-4 h-4 text-red-600" />
+                                          <span>Conflicto</span>
+                                        </div>
+                                      )}
+                                      {selectedRelationshipType === 'distant' && (
+                                        <div className="flex items-center gap-2">
+                                          <Minus className="w-4 h-4 text-gray-600" />
+                                          <span>Distante</span>
+                                        </div>
+                                      )}
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="family" className="flex items-center gap-2">
+                                      <Users2 className="w-4 h-4 text-blue-600" />
+                                      <span>Familiar</span>
+                                    </SelectItem>
+                                    <SelectItem value="strong" className="flex items-center gap-2">
+                                      <Heart className="w-4 h-4 text-green-600" />
+                                      <span>Conexión Fuerte</span>
+                                    </SelectItem>
+                                    <SelectItem value="tension" className="flex items-center gap-2">
+                                      <AlertTriangle className="w-4 h-4 text-amber-600" />
+                                      <span>Tensión</span>
+                                    </SelectItem>
+                                    <SelectItem value="conflict" className="flex items-center gap-2">
+                                      <AlertCircle className="w-4 h-4 text-red-600" />
+                                      <span>Conflicto</span>
+                                    </SelectItem>
+                                    <SelectItem value="distant" className="flex items-center gap-2">
+                                      <Minus className="w-4 h-4 text-gray-600" />
+                                      <span>Distante</span>
+                                    </SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <Button
+                                onClick={() => {
+                                  if (selectedTargetId) {
+                                    addDollRelationship(selectedDoll.id, {
+                                      targetId: selectedTargetId,
+                                      type: selectedRelationshipType,
+                                    });
+                                    setSelectedTargetId("");
+                                    setRelationshipDialogOpen(false);
+                                  }
+                                }}
+                                className="w-full"
+                              >
+                                Agregar Conexión
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedDoll.relationships && selectedDoll.relationships.length > 0 ? (
+                          selectedDoll.relationships.map((rel) => {
+                            const targetDoll = placedDolls.find(d => d.id === rel.targetId);
+                            if (!targetDoll) return null;
+                            const relColors = {
+                              family: "bg-blue-100 text-blue-700 border-blue-300",
+                              strong: "bg-green-100 text-green-700 border-green-300",
+                              tension: "bg-amber-100 text-amber-700 border-amber-300",
+                              conflict: "bg-red-100 text-red-700 border-red-300",
+                              distant: "bg-gray-100 text-gray-700 border-gray-300",
+                            };
+                            return (
+                              <div key={rel.targetId} className={`flex items-center gap-1.5 px-2 py-1 rounded border text-xs ${relColors[rel.type]}`}>
+                                <span>{targetDoll.label || targetDoll.dollType.name}</span>
+                                <button
+                                  onClick={() => removeDollRelationship(selectedDoll.id, rel.targetId)}
+                                  className="hover:bg-black/10 rounded px-1"
+                                  aria-label="Eliminar conexión"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-slate-500 italic">Sin conexiones</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="h-8 w-px bg-slate-300" />
-
-            {/* Quick Stats */}
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-green-600" />
-              <div className="text-xs text-slate-600">
-                <div>Configuraciones: {savedConfigurations.length}</div>
-                <div>Estado: {dollCount() > 0 ? 'Activa' : 'Preparando'}</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={clearTable}
-              size="sm"
-              variant="outline"
-              className="text-red-600 hover:bg-red-50 hover:text-red-700"
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Limpiar Mesa
-            </Button>
-            <Button
-              onClick={toggleInfoPanel}
-              className="h-8 w-auto px-3 py-1 bg-red-100 border border-red-300 text-red-700 font-semibold rounded hover:bg-red-200 transition-all text-xs"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="inline w-4 h-4 mr-1 align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg> Ocultar
-            </Button>
-          </div>
+            );
+          })()}
         </div>
       </CardContent>
     </Card>

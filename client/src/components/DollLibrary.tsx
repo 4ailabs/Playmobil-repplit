@@ -3,16 +3,17 @@ import { DOLL_TYPES } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { UserRound, User, UserCog, Baby, Shapes } from "lucide-react";
+import { UserRound, User, UserCog, Baby, Shapes, Lightbulb } from "lucide-react";
+import { logger } from "../lib/logger";
 
 export default function DollLibrary() {
   const { setDraggedDoll, draggedDoll, addDoll, dropDoll } = useTherapy();
   const [hoveredDoll, setHoveredDoll] = useState<string | null>(null);
 
   const generateRandomPosition = (): [number, number, number] => {
-    // Random position within table bounds (8 wide x 10 deep)
-    const x = (Math.random() - 0.5) * 7; // -3.5 to 3.5
-    const z = (Math.random() - 0.5) * 9; // -4.5 to 4.5
+    // Random position within table bounds (12 wide x 14 deep - Aumentado)
+    const x = (Math.random() - 0.5) * 11; // -5.5 to 5.5
+    const z = (Math.random() - 0.5) * 13; // -6.5 to 6.5
     const y = 0.16; // Fixed height above table
     return [x, y, z];
   };
@@ -26,19 +27,19 @@ export default function DollLibrary() {
   const getLifePathForPosition = (position: [number, number, number]): 'north' | 'south' | 'east' | 'west' | null => {
     const [x, , z] = position;
     
-    // Check if position is in any cardinal direction zone
+    // Check if position is in any cardinal direction zone (ajustado para mesa 12x14)
     if (Math.abs(z) > Math.abs(x)) {
       // North/South zones (top/bottom of table)
       return z < 0 ? 'north' : 'south';
-    } else if (Math.abs(x) > 2) {
-      // East/West zones (left/right of table)  
+    } else if (Math.abs(x) > 3) {
+      // East/West zones (left/right of table) - Ajustado para mesa más grande
       return x > 0 ? 'east' : 'west';
     }
     
     return null; // Center area
   };
 
-  const handleDollSelect = (dollType: any) => {
+  const handleDollSelect = (dollType: typeof DOLL_TYPES[number]) => {
     const randomPosition = generateRandomPosition();
     const randomRotation = generateRandomRotation();
     
@@ -51,7 +52,7 @@ export default function DollLibrary() {
       isDropped: true
     };
     
-    console.log('Muñeco colocado al azar:', dollType.name, 'Posición:', randomPosition, 'Camino:', newDoll.lifePath);
+    logger.debug('Muñeco colocado al azar:', dollType.name, 'Posición:', randomPosition, 'Camino:', newDoll.lifePath);
     addDoll(newDoll);
     dropDoll(newDoll.id, randomPosition);
   };
@@ -101,45 +102,51 @@ export default function DollLibrary() {
               <CardContent className="pt-0">
                 <div className="grid grid-cols-2 gap-2">
                   {categoryDolls.map((dollType) => (
-                    <div
+                    <button
                       key={dollType.id}
+                      type="button"
                       className={`
-                        relative p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 touch-target touch-feedback
+                        relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-300 touch-target touch-feedback
+                        bg-gradient-to-br from-white to-slate-50
                         ${draggedDoll?.dollType.id === dollType.id 
-                          ? 'border-blue-400 bg-blue-50' 
-                          : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 active:bg-blue-100 active:border-blue-400'
+                          ? 'border-blue-400 bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg scale-105 ring-2 ring-blue-300 ring-offset-1' 
+                          : 'border-gray-200 hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100/50 active:bg-blue-100 active:border-blue-400 active:scale-95'
                         }
-                        ${hoveredDoll === dollType.id ? 'shadow-md' : 'shadow-sm'}
-                        min-h-[60px] min-w-[60px]
+                        ${hoveredDoll === dollType.id ? 'shadow-lg transform scale-105' : 'shadow-sm hover:shadow-md'}
+                        min-h-[70px] min-w-[70px]
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                        group
                       `}
                       onClick={() => handleDollSelect(dollType)}
                       onMouseEnter={() => setHoveredDoll(dollType.id)}
                       onMouseLeave={() => setHoveredDoll(null)}
                       onTouchStart={() => setHoveredDoll(dollType.id)}
                       onTouchEnd={() => setHoveredDoll(null)}
+                      aria-label={`Seleccionar ${dollType.name}`}
+                      aria-pressed={draggedDoll?.dollType.id === dollType.id}
                     >
                       {/* Visual representation */}
                       <div className="flex flex-col items-center gap-2">
                         <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                          className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md group-hover:shadow-lg transition-shadow duration-300 group-hover:scale-110 transform"
                           style={{ backgroundColor: dollType.color }}
                         >
                           {dollType.name.charAt(0)}
                         </div>
-                        <span className="text-xs font-medium text-slate-700 text-center leading-tight">
+                        <span className="text-xs font-semibold text-slate-700 text-center leading-tight group-hover:text-blue-700 transition-colors">
                           {dollType.name}
                         </span>
                       </div>
 
                       {/* Selection indicator */}
                       {draggedDoll?.dollType.id === dollType.id && (
-                        <div className="absolute -top-1 -right-1">
-                          <Badge variant="default" className="text-xs px-1">
+                        <div className="absolute -top-1 -right-1 animate-in zoom-in-50 duration-200">
+                          <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
                             ✓
                           </Badge>
                         </div>
                       )}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </CardContent>
@@ -149,13 +156,30 @@ export default function DollLibrary() {
       </div>
 
       {/* Instructions */}
-      <div className="p-4 border-t border-blue-200 bg-blue-50/50">
-        <div className="text-xs text-slate-600 space-y-1">
-          <p>💡 <strong>Instrucciones:</strong></p>
-          <p>• Click en un muñeco para seleccionar</p>
-          <p>• Click en la mesa para colocar</p>
-          <p>• Arrastra muñecos ya colocados</p>
-          <p>• Click derecho para eliminar</p>
+      <div className="p-4 border-t border-blue-200 bg-gradient-to-br from-blue-50/80 to-indigo-50/50">
+        <div className="text-xs text-slate-700 space-y-1.5">
+          <p className="font-semibold text-blue-800 flex items-center gap-1.5">
+            <Lightbulb className="w-4 h-4 text-blue-600" />
+            Instrucciones:
+          </p>
+          <div className="space-y-1 pl-5">
+            <p className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>Click en un muñeco para seleccionar</span>
+            </p>
+            <p className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>Se coloca automáticamente en la mesa</span>
+            </p>
+            <p className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>Doble click para rotar dirección</span>
+            </p>
+            <p className="flex items-start gap-2">
+              <span className="text-blue-500 mt-0.5">•</span>
+              <span>Delete/Backspace para eliminar</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

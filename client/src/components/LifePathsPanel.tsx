@@ -24,15 +24,33 @@ export default function LifePathsPanel() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {LIFE_PATHS.map((path) => (
+        {LIFE_PATHS.map((path) => {
+          const isSelected = selectedLifePath?.id === path.id;
+          const pathGradients = {
+            north: 'from-blue-50 via-blue-100/50 to-blue-50',
+            south: 'from-red-50 via-red-100/50 to-red-50',
+            east: 'from-green-50 via-green-100/50 to-green-50',
+            west: 'from-amber-50 via-amber-100/50 to-amber-50',
+          };
+          const pathBorders = {
+            north: isSelected ? 'border-blue-400' : 'border-blue-200',
+            south: isSelected ? 'border-red-400' : 'border-red-200',
+            east: isSelected ? 'border-green-400' : 'border-green-200',
+            west: isSelected ? 'border-amber-400' : 'border-amber-200',
+          };
+          
+          return (
           <Card
             key={path.id}
             className={`
-              cursor-pointer transition-all duration-200
-              ${selectedLifePath?.id === path.id
-                ? 'bg-blue-100 border-blue-400 shadow-md'
-                : 'bg-white/70 border-gray-200 hover:bg-blue-50 hover:border-blue-300'
+              cursor-pointer transition-all duration-300 transform
+              bg-gradient-to-br ${pathGradients[path.id]}
+              border-2 ${pathBorders[path.id]}
+              ${isSelected
+                ? 'shadow-lg scale-[1.02] ring-2 ring-offset-2'
+                : 'shadow-sm hover:shadow-md hover:scale-[1.01]'
               }
+              hover:border-opacity-70
             `}
             onClick={() => setSelectedLifePath(path)}
           >
@@ -44,9 +62,12 @@ export default function LifePathsPanel() {
                     {path.name}
                   </span>
                 </div>
-                {selectedLifePath?.id === path.id && (
-                  <Badge variant={"default" as const} className="text-xs">
-                    Seleccionado
+                {isSelected && (
+                  <Badge 
+                    variant={"default" as const} 
+                    className="text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm animate-in fade-in-50 duration-200"
+                  >
+                    ✓ Seleccionado
                   </Badge>
                 )}
               </CardTitle>
@@ -56,7 +77,7 @@ export default function LifePathsPanel() {
                 {path.description}
               </p>
               
-              {selectedLifePath?.id === path.id && (
+              {isSelected && (
                 <div className="space-y-3">
                   <div>
                     <p className="text-xs font-medium text-slate-700 mb-1">Características:</p>
@@ -110,7 +131,8 @@ export default function LifePathsPanel() {
               )}
             </CardContent>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       {/* Current path info */}

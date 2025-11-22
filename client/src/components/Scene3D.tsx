@@ -1,20 +1,26 @@
 import { OrbitControls, Environment } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import * as THREE from "three";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import Table3D from "./Table3D";
 import Doll3D from "./Doll3D";
+import DollConnections from "./DollConnections";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 
 export default function Scene3D() {
   const { camera, gl } = useThree();
-  const controlsRef = useRef<any>();
+  const controlsRef = useRef<OrbitControlsImpl>(null);
   const { placedDolls } = useTherapy();
 
-  // Set up initial camera position
+  // Set up initial camera position - Con más perspectiva dramática
   useEffect(() => {
-    camera.position.set(10, 8, 10);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(10, 7, 10);
+    camera.lookAt(0, 0.3, 0);
+    // Ajustar el ángulo de la cámara para más perspectiva
+    if (camera instanceof THREE.PerspectiveCamera) {
+      camera.updateProjectionMatrix();
+    }
   }, [camera]);
 
   // Set background color
@@ -43,23 +49,27 @@ export default function Scene3D() {
       {/* Environment */}
       <Environment preset="city" />
 
-      {/* Camera Controls */}
+      {/* Camera Controls - Ajustados para perspectiva más dramática */}
       <OrbitControls
         ref={controlsRef}
-        target={[0, 0, 0]}
+        target={[0, 0.3, 0]}
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={5}
-        maxDistance={25}
-        minPolarAngle={0.2}
-        maxPolarAngle={Math.PI / 2}
+        minDistance={4}
+        maxDistance={30}
+        minPolarAngle={0.15}
+        maxPolarAngle={Math.PI / 2.2}
         enableDamping={true}
         dampingFactor={0.05}
+        zoomSpeed={1.2}
       />
 
       {/* Main Table with Four Life Paths indicators */}
       <Table3D />
+
+      {/* Connections between dolls */}
+      <DollConnections dolls={placedDolls} />
 
       {/* Placed Dolls */}
       {placedDolls.map((doll) => (

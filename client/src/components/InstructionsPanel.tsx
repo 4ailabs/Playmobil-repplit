@@ -10,7 +10,7 @@ export default function InstructionsPanel() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+        className="fixed top-24 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 shadow-lg"
         size="sm"
       >
         <BookOpen className="w-4 h-4" /> Instrucciones
@@ -19,7 +19,7 @@ export default function InstructionsPanel() {
   }
 
   return (
-    <Card className="fixed top-4 right-4 z-50 w-80 bg-white/95 backdrop-blur-sm border-blue-200 shadow-lg">
+    <Card className="fixed top-24 right-4 z-50 w-80 bg-white/95 backdrop-blur-sm border-blue-200 shadow-lg max-h-[calc(100vh-7rem)] overflow-y-auto">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg text-blue-900 flex items-center gap-2">

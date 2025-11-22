@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { PlacedDoll, SavedConfiguration, LifePath, LIFE_PATHS, DollType, DOLL_TYPES } from "../types";
 import { getLocalStorage, setLocalStorage } from "../utils";
+import { logger } from "../logger";
+import { validateSavedConfigurations, validatePlacedDoll } from "../validation";
 
 interface TherapyState {
   // Scene state
@@ -34,6 +36,10 @@ interface TherapyState {
   deleteConfiguration: (configId: string) => void;
   initializeFromStorage: () => void;
   updateDollLabel: (dollId: string, label: string) => void;
+  updateDollNotes: (dollId: string, notes: string) => void;
+  updateDollEmotion: (dollId: string, emotion: 'neutral' | 'happy' | 'sad' | 'angry' | 'anxious') => void;
+  addDollRelationship: (dollId: string, relationship: import("../types").DollRelationship) => void;
+  removeDollRelationship: (dollId: string, targetId: string) => void;
   
   // Computed
   dollCount: () => number;
@@ -129,41 +135,82 @@ export const useTherapy = create<TherapyState>()(
     },
     
     saveConfiguration: (name: string) => {
-      const { placedDolls, savedConfigurations } = get();
-      const newConfig: SavedConfiguration = {
-        id: `config-${Date.now()}`,
-        name,
-        dolls: placedDolls,
-        scenario: 'four-life-paths',
-        timestamp: Date.now(),
-        analysis: get().getAnalysis()
-      };
-      
-      const updatedConfigs = [...savedConfigurations, newConfig];
-      set({ savedConfigurations: updatedConfigs });
-      setLocalStorage('therapy-configurations', updatedConfigs);
+      try {
+        const { placedDolls, savedConfigurations } = get();
+        const newConfig: SavedConfiguration = {
+          id: `config-${Date.now()}`,
+          name,
+          dolls: placedDolls,
+          scenario: 'four-life-paths',
+          timestamp: Date.now(),
+          analysis: get().getAnalysis()
+        };
+        
+        const updatedConfigs = [...savedConfigurations, newConfig];
+        set({ savedConfigurations: updatedConfigs });
+        const saved = setLocalStorage('therapy-configurations', updatedConfigs);
+        if (!saved) {
+          logger.warn('No se pudo guardar la configuración en localStorage');
+        }
+      } catch (error) {
+        logger.errorWithContext('Error al guardar configuración', error);
+        throw error;
+      }
     },
     
     loadConfiguration: (configId: string) => {
-      const { savedConfigurations } = get();
-      const config = savedConfigurations.find(c => c.id === configId);
-      if (config) {
-        set({
-          placedDolls: config.dolls
-        });
+      try {
+        const { savedConfigurations } = get();
+        const config = savedConfigurations.find(c => c.id === configId);
+        if (config) {
+          // Validar cada muñeco antes de cargar
+          const validatedDolls: PlacedDoll[] = [];
+          for (const doll of config.dolls) {
+            const validated = validatePlacedDoll(doll);
+            if (validated) {
+              validatedDolls.push(validated);
+            } else {
+              logger.warn('Muñeco inválido omitido al cargar configuración:', doll);
+            }
+          }
+          
+          set({
+            placedDolls: validatedDolls
+          });
+          logger.debug('Configuración cargada:', configId, `(${validatedDolls.length} muñecos válidos)`);
+        } else {
+          logger.warn('Configuración no encontrada:', configId);
+        }
+      } catch (error) {
+        logger.errorWithContext('Error al cargar configuración', error, { configId });
       }
     },
     
     deleteConfiguration: (configId: string) => {
-      const { savedConfigurations } = get();
-      const updatedConfigs = savedConfigurations.filter(c => c.id !== configId);
-      set({ savedConfigurations: updatedConfigs });
-      setLocalStorage('therapy-configurations', updatedConfigs);
+      try {
+        const { savedConfigurations } = get();
+        const updatedConfigs = savedConfigurations.filter(c => c.id !== configId);
+        set({ savedConfigurations: updatedConfigs });
+        const saved = setLocalStorage('therapy-configurations', updatedConfigs);
+        if (!saved) {
+          logger.warn('No se pudo guardar la eliminación en localStorage');
+        }
+      } catch (error) {
+        logger.errorWithContext('Error al eliminar configuración', error, { configId });
+      }
     },
     
     initializeFromStorage: () => {
-      const savedConfigs = getLocalStorage('therapy-configurations') || [];
-      set({ savedConfigurations: savedConfigs });
+      try {
+        const savedConfigs = getLocalStorage<unknown>('therapy-configurations');
+        // Validar todas las configuraciones con Zod
+        const validatedConfigs = validateSavedConfigurations(savedConfigs);
+        set({ savedConfigurations: validatedConfigs });
+        logger.debug('Configuraciones inicializadas desde localStorage:', validatedConfigs.length, 'válidas');
+      } catch (error) {
+        logger.errorWithContext('Error al inicializar desde localStorage', error);
+        set({ savedConfigurations: [] });
+      }
     },
     
     updateDollLabel: (dollId: string, label: string) => {
@@ -171,6 +218,51 @@ export const useTherapy = create<TherapyState>()(
         placedDolls: state.placedDolls.map(doll =>
           doll.id === dollId ? { ...doll, label } : doll
         )
+      }));
+    },
+    
+    updateDollNotes: (dollId: string, notes: string) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll =>
+          doll.id === dollId ? { ...doll, notes } : doll
+        )
+      }));
+    },
+    
+    updateDollEmotion: (dollId: string, emotion: 'neutral' | 'happy' | 'sad' | 'angry' | 'anxious') => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll =>
+          doll.id === dollId ? { ...doll, emotion } : doll
+        )
+      }));
+    },
+    
+    addDollRelationship: (dollId: string, relationship: import("../types").DollRelationship) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll => {
+          if (doll.id === dollId) {
+            const existingRelationships = doll.relationships || [];
+            // Evitar duplicados
+            if (!existingRelationships.find(r => r.targetId === relationship.targetId)) {
+              return { ...doll, relationships: [...existingRelationships, relationship] };
+            }
+          }
+          return doll;
+        })
+      }));
+    },
+    
+    removeDollRelationship: (dollId: string, targetId: string) => {
+      set((state) => ({
+        placedDolls: state.placedDolls.map(doll => {
+          if (doll.id === dollId && doll.relationships) {
+            return { 
+              ...doll, 
+              relationships: doll.relationships.filter(r => r.targetId !== targetId) 
+            };
+          }
+          return doll;
+        })
       }));
     },
     

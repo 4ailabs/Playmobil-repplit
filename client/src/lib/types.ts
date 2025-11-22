@@ -6,6 +6,14 @@ export interface DollType {
   category: 'self' | 'father' | 'mother' | 'grandfather' | 'grandmother' | 'partner' | 'child' | 'sibling' | 'deceased' | 'other';
 }
 
+export type RelationshipType = 'family' | 'conflict' | 'tension' | 'strong' | 'distant';
+
+export interface DollRelationship {
+  targetId: string;
+  type: RelationshipType;
+  label?: string;
+}
+
 export interface PlacedDoll {
   id: string;
   dollType: DollType;
@@ -14,6 +22,9 @@ export interface PlacedDoll {
   lifePath: 'north' | 'south' | 'east' | 'west' | null;
   isDropped: boolean;
   label?: string;
+  relationships?: DollRelationship[]; // Conexiones con otros muñecos
+  emotion?: 'neutral' | 'happy' | 'sad' | 'angry' | 'anxious'; // Estado emocional
+  notes?: string; // Notas expandibles
 }
 
 export interface LifePath {
