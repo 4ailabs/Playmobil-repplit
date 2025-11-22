@@ -10,10 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { 
   Trash2, Save, FolderOpen, BarChart3, Users, Settings, Download, Link2, FileText, Smile,
   Meh, Laugh, Frown, Angry, AlertTriangle, Users2, Heart, AlertCircle, Minus,
-  Circle, CheckCircle2, Image as ImageIcon, Type
+  Circle, CheckCircle2, Image as ImageIcon, Type, Undo2, Redo2
 } from "lucide-react";
 import { DollRelationship, RelationshipType } from "../lib/types";
 import { IMAGE_CARD_URLS, WORD_CARD_DATA } from "../lib/ohCardsConstants";
+import { toast } from "sonner";
 
 interface InfoPanelProps {
   onExportImage?: () => void;
@@ -40,6 +41,10 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
     removeDollRelationship,
     updateDollOHCard,
     setDollNeedingOHCard,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
   } = useTherapy();
 
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -56,6 +61,10 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
   const handleSave = () => {
     if (configName.trim()) {
       saveConfiguration(configName.trim());
+      toast.success('Configuración guardada exitosamente', {
+        description: `"${configName.trim()}" se ha guardado correctamente`,
+        icon: '💾'
+      });
       setConfigName("");
       setSaveDialogOpen(false);
     }
@@ -63,7 +72,65 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
 
   const handleLoad = (configId: string) => {
     loadConfiguration(configId);
+    const config = savedConfigurations.find(c => c.id === configId);
+    toast.success('Configuración cargada', {
+      description: `"${config?.name}" se ha cargado correctamente`,
+      icon: '📂'
+    });
     setLoadDialogOpen(false);
+  };
+  
+  const handleClearTable = () => {
+    if (dollCount() === 0) {
+      toast.info('La mesa ya está vacía', {
+        duration: 2000
+      });
+      return;
+    }
+    clearTable();
+    toast.success('Mesa limpiada', {
+      description: 'Todos los muñecos han sido eliminados',
+      icon: '🗑️'
+    });
+  };
+  
+  const handleDelete = (configId: string) => {
+    const config = savedConfigurations.find(c => c.id === configId);
+    deleteConfiguration(configId);
+    toast.success('Configuración eliminada', {
+      description: `"${config?.name}" ha sido eliminada`,
+      icon: '🗑️'
+    });
+  };
+  
+  const handleUndo = () => {
+    if (canUndo()) {
+      undo();
+      toast.success('Acción deshecha', {
+        duration: 2000,
+        icon: '↶'
+      });
+    }
+  };
+  
+  const handleRedo = () => {
+    if (canRedo()) {
+      redo();
+      toast.success('Acción rehecha', {
+        duration: 2000,
+        icon: '↷'
+      });
+    }
+  };
+  
+  const handleExport = () => {
+    if (onExportImage) {
+      onExportImage();
+      toast.success('Exportando imagen...', {
+        description: 'La descarga comenzará en un momento',
+        icon: '📸'
+      });
+    }
   };
 
   if (!isInfoPanelOpen) {
@@ -134,25 +201,43 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
 
               {/* Botones de acción */}
               <div className="flex items-center gap-2">
+                {/* Botones Undo/Redo */}
+                <div className="flex items-center gap-1 border-r border-slate-200 pr-2">
+                  <Button
+                    onClick={handleUndo}
+                    disabled={!canUndo()}
+                    size="sm"
+                    variant="outline"
+                    className="h-9 px-2 disabled:opacity-50"
+                    title="Deshacer (Ctrl+Z)"
+                  >
+                    <Undo2 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    onClick={handleRedo}
+                    disabled={!canRedo()}
+                    size="sm"
+                    variant="outline"
+                    className="h-9 px-2 disabled:opacity-50"
+                    title="Rehacer (Ctrl+Y)"
+                  >
+                    <Redo2 className="w-4 h-4" />
+                  </Button>
+                </div>
+                
                 {onExportImage && (
                   <Button
-                    onClick={() => {
-                      if (onExportImage) {
-                        onExportImage();
-                      } else {
-                        alert('La función de exportación no está disponible. Por favor, recarga la página.');
-                      }
-                    }}
+                    onClick={handleExport}
                     size="sm"
                     className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md hover:shadow-lg transition-all"
-                    title="Exportar imagen de la constelación familiar"
+                    title="Exportar imagen de la dinámica sistémica"
                   >
                     <Download className="w-4 h-4 mr-1.5" />
                     <span className="hidden sm:inline">Exportar</span>
                   </Button>
                 )}
                 <Button
-                  onClick={clearTable}
+                  onClick={handleClearTable}
                   size="sm"
                   variant="outline"
                   className="text-red-600 border-red-300 hover:bg-red-50"
@@ -394,7 +479,7 @@ export default function InfoPanel({ onExportImage }: InfoPanelProps) {
                               <button
                                 onClick={() => {
                                   setPreviewImageUrl(selectedDoll.ohCardImage || null);
-                                  setPreviewWord(selectedDoll.ohCardWord);
+                                  setPreviewWord(selectedDoll.ohCardWord || null);
                                   setPreviewMode('word');
                                   setOhCardPreviewOpen(true);
                                 }}

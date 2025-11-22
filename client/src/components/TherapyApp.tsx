@@ -8,6 +8,7 @@ import InstructionsPanel from "./InstructionsPanel";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { logger } from "../lib/logger";
 import { useKeyboardDelete } from "../hooks/useKeyboardDelete";
+import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useIsMobile } from "../hooks/use-is-mobile";
 import { MobileDrawer } from "./MobileDrawer";
 import { Compass, HeartCrack, Scale, Sun, Maximize2, Minimize2, X, Menu, BookOpen, Sparkles } from "lucide-react";
@@ -70,15 +71,18 @@ function CanvasExporter({ onExportReady }: { onExportReady: (exportFn: () => voi
           // Intentar obtener el contexto WebGL directamente del canvas
           const webglContext = canvas.getContext('webgl') || canvas.getContext('webgl2') || canvas.getContext('experimental-webgl');
           
-          if (!webglContext || typeof webglContext.readPixels !== 'function') {
+          if (!webglContext || !('readPixels' in webglContext) || typeof webglContext.readPixels !== 'function') {
             alert('Error: No se pudo acceder al contexto WebGL. Por favor, intenta recargar la página.');
             logger.error('No se pudo obtener el contexto WebGL para readPixels');
             return;
           }
 
+          // Type guard - asegurar que es un contexto WebGL
+          const glContext = webglContext as WebGLRenderingContext | WebGL2RenderingContext;
+
           // Leer los píxeles directamente del framebuffer de WebGL
           const pixels = new Uint8Array(width * height * 4);
-          webglContext.readPixels(0, 0, width, height, webglContext.RGBA, webglContext.UNSIGNED_BYTE, pixels);
+          glContext.readPixels(0, 0, width, height, glContext.RGBA, glContext.UNSIGNED_BYTE, pixels);
           
           // Crear un canvas temporal con mejor resolución (2x)
           const tempCanvas = document.createElement('canvas');
@@ -195,8 +199,9 @@ export default function TherapyApp() {
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [lifePathsModalOpen, setLifePathsModalOpen] = useState(false);
 
-  // Hook global para manejar eliminación con teclado (evita memory leaks)
+  // Hooks globales para manejar atajos de teclado (evita memory leaks)
   useKeyboardDelete();
+  useUndoRedo();
 
   const handleExportReady = useCallback((exportFn: () => void) => {
     exportFnRef.current = exportFn;

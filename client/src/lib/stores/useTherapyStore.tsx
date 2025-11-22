@@ -5,6 +5,12 @@ import { getLocalStorage, setLocalStorage } from "../utils";
 import { logger } from "../logger";
 import { validateSavedConfigurations, validatePlacedDoll } from "../validation";
 
+// Snapshot del estado para Undo/Redo
+interface StateSnapshot {
+  placedDolls: PlacedDoll[];
+  timestamp: number;
+}
+
 interface TherapyState {
   // Scene state
   placedDolls: PlacedDoll[];
@@ -17,6 +23,11 @@ interface TherapyState {
   savedConfigurations: SavedConfiguration[];
   selectedDollId: string | null;
   isFullscreen: boolean;
+  
+  // Undo/Redo state
+  history: StateSnapshot[];
+  historyIndex: number;
+  maxHistorySize: number;
   
   // OH Cards state
   selectedOHCardImages: string[];
@@ -57,6 +68,13 @@ interface TherapyState {
   setDollNeedingOHCard: (dollId: string | null) => void;
   setAutoAssignOHCards: (enabled: boolean) => void;
   
+  // Undo/Redo actions
+  saveSnapshot: () => void;
+  undo: () => boolean;
+  redo: () => boolean;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
+  
   // Computed
   dollCount: () => number;
   getAnalysis: () => string;
@@ -74,6 +92,12 @@ export const useTherapy = create<TherapyState>()(
     savedConfigurations: [],
     selectedDollId: null,
     isFullscreen: false,
+    
+    // Undo/Redo initial state
+    history: [],
+    historyIndex: -1,
+    maxHistorySize: 50, // Limitar a 50 estados en el historial
+    
     selectedOHCardImages: [],
     selectedOHCardWords: [],
     ohCardsAssigned: 0,
@@ -82,12 +106,14 @@ export const useTherapy = create<TherapyState>()(
     
     // Actions
     addDoll: (doll: PlacedDoll) => {
+      get().saveSnapshot(); // Guardar estado antes de agregar
       set((state) => ({
         placedDolls: [...state.placedDolls, doll]
       }));
     },
     
     removeDoll: (dollId: string) => {
+      get().saveSnapshot(); // Guardar estado antes de eliminar
       set((state) => ({
         placedDolls: state.placedDolls.filter(doll => doll.id !== dollId)
       }));
@@ -102,6 +128,7 @@ export const useTherapy = create<TherapyState>()(
     },
 
     updateDollRotation: (dollId: string, rotation: [number, number, number]) => {
+      get().saveSnapshot(); // Guardar estado antes de rotar
       set((state) => ({
         placedDolls: state.placedDolls.map(doll => 
           doll.id === dollId ? { ...doll, rotation } : doll
@@ -118,6 +145,7 @@ export const useTherapy = create<TherapyState>()(
     },
     
     clearTable: () => {
+      get().saveSnapshot(); // Guardar estado antes de limpiar
       set({ placedDolls: [] });
     },
     
@@ -417,6 +445,81 @@ export const useTherapy = create<TherapyState>()(
       if (normalizedAngle >= Math.PI / 2 && normalizedAngle < Math.PI) return 'north';
       if (normalizedAngle >= Math.PI && normalizedAngle < 3 * Math.PI / 2) return 'west';
       return 'south';
+    },
+    
+    // Undo/Redo implementation
+    saveSnapshot: () => {
+      const state = get();
+      const snapshot: StateSnapshot = {
+        placedDolls: JSON.parse(JSON.stringify(state.placedDolls)), // Deep clone
+        timestamp: Date.now()
+      };
+      
+      // Remover todo el historial después del índice actual (si se hizo undo y luego una nueva acción)
+      const newHistory = state.history.slice(0, state.historyIndex + 1);
+      
+      // Agregar nuevo snapshot
+      newHistory.push(snapshot);
+      
+      // Limitar el tamaño del historial
+      const trimmedHistory = newHistory.slice(-state.maxHistorySize);
+      
+      set({
+        history: trimmedHistory,
+        historyIndex: trimmedHistory.length - 1
+      });
+      
+      logger.debug('Snapshot guardado. Historial:', trimmedHistory.length, 'estados');
+    },
+    
+    undo: () => {
+      const state = get();
+      
+      if (state.historyIndex <= 0) {
+        logger.debug('No hay más acciones para deshacer');
+        return false;
+      }
+      
+      const newIndex = state.historyIndex - 1;
+      const snapshot = state.history[newIndex];
+      
+      set({
+        placedDolls: JSON.parse(JSON.stringify(snapshot.placedDolls)), // Deep clone
+        historyIndex: newIndex
+      });
+      
+      logger.debug('Undo ejecutado. Índice:', newIndex);
+      return true;
+    },
+    
+    redo: () => {
+      const state = get();
+      
+      if (state.historyIndex >= state.history.length - 1) {
+        logger.debug('No hay más acciones para rehacer');
+        return false;
+      }
+      
+      const newIndex = state.historyIndex + 1;
+      const snapshot = state.history[newIndex];
+      
+      set({
+        placedDolls: JSON.parse(JSON.stringify(snapshot.placedDolls)), // Deep clone
+        historyIndex: newIndex
+      });
+      
+      logger.debug('Redo ejecutado. Índice:', newIndex);
+      return true;
+    },
+    
+    canUndo: () => {
+      const state = get();
+      return state.historyIndex > 0;
+    },
+    
+    canRedo: () => {
+      const state = get();
+      return state.historyIndex < state.history.length - 1;
     }
   }))
 );
