@@ -303,13 +303,14 @@ export default function TherapyApp() {
 
       {/* ═══════════════ MODALS ═══════════════ */}
       <Dialog open={lifePathsModalOpen} onOpenChange={setLifePathsModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="font-display text-2xl font-semibold text-warm-800">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-chrome-bg border-chrome-border p-0 scrollbar-warm">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b chrome-divider">
+            <DialogTitle className="font-display text-xl font-semibold text-chrome-text">
               Los Cuatro Caminos de Vida
             </DialogTitle>
+            <p className="text-xs text-chrome-text-muted mt-1">Orientación cardinal en la mesa sistémica</p>
           </DialogHeader>
-          <div className="mt-4">
+          <div className="p-6">
             <LifePathsPanel />
           </div>
         </DialogContent>
