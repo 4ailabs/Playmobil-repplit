@@ -2,115 +2,119 @@ import { LIFE_PATHS } from "../lib/types";
 import { useTherapy } from "../lib/stores/useTherapyStore";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Compass, Sword, Sun, Scale, Lightbulb, HeartCrack } from "lucide-react";
+import { Compass, Sun, Scale, HeartCrack, Lightbulb } from "lucide-react";
 
 export default function LifePathsPanel() {
   const { selectedLifePath, setSelectedLifePath } = useTherapy();
 
-  const pathIcons = {
-    north: <Compass className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-blue-700" />,
-    south: <HeartCrack className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-red-700" />,
-    east: <Sun className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-yellow-500" />,
-    west: <Scale className="w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-amber-700" />,
+  const pathConfig: Record<string, {
+    icon: JSX.Element;
+    gradient: string;
+    border: string;
+    activeBorder: string;
+    badgeBg: string;
+  }> = {
+    north: {
+      icon: <Compass className="w-7 h-7 text-blue-600" />,
+      gradient: 'from-blue-50/80 to-blue-100/40',
+      border: 'border-blue-200/60',
+      activeBorder: 'border-blue-400 ring-2 ring-blue-200',
+      badgeBg: 'bg-blue-600',
+    },
+    south: {
+      icon: <HeartCrack className="w-7 h-7 text-red-600" />,
+      gradient: 'from-red-50/80 to-red-100/40',
+      border: 'border-red-200/60',
+      activeBorder: 'border-red-400 ring-2 ring-red-200',
+      badgeBg: 'bg-red-600',
+    },
+    east: {
+      icon: <Sun className="w-7 h-7 text-amber-500" />,
+      gradient: 'from-amber-50/80 to-amber-100/40',
+      border: 'border-amber-200/60',
+      activeBorder: 'border-amber-400 ring-2 ring-amber-200',
+      badgeBg: 'bg-amber-600',
+    },
+    west: {
+      icon: <Scale className="w-7 h-7 text-emerald-600" />,
+      gradient: 'from-emerald-50/80 to-emerald-100/40',
+      border: 'border-emerald-200/60',
+      activeBorder: 'border-emerald-400 ring-2 ring-emerald-200',
+      badgeBg: 'bg-emerald-600',
+    },
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="p-4 border-b border-blue-200">
-        <h2 className="text-lg font-semibold text-slate-800">Los Cuatro Caminos de Vida</h2>
-        <p className="text-sm text-slate-600 mt-1">
-          Selecciona un camino para entender sus características
-        </p>
-      </div>
+    <div className="space-y-3">
+      {LIFE_PATHS.map((path) => {
+        const isSelected = selectedLifePath?.id === path.id;
+        const config = pathConfig[path.id];
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {LIFE_PATHS.map((path) => {
-          const isSelected = selectedLifePath?.id === path.id;
-          const pathGradients = {
-            north: 'from-blue-50 via-blue-100/50 to-blue-50',
-            south: 'from-red-50 via-red-100/50 to-red-50',
-            east: 'from-green-50 via-green-100/50 to-green-50',
-            west: 'from-amber-50 via-amber-100/50 to-amber-50',
-          };
-          const pathBorders = {
-            north: isSelected ? 'border-blue-400' : 'border-blue-200',
-            south: isSelected ? 'border-red-400' : 'border-red-200',
-            east: isSelected ? 'border-green-400' : 'border-green-200',
-            west: isSelected ? 'border-amber-400' : 'border-amber-200',
-          };
-          
-          return (
+        return (
           <Card
             key={path.id}
             className={`
-              cursor-pointer transition-all duration-300 transform
-              bg-gradient-to-br ${pathGradients[path.id]}
-              border-2 ${pathBorders[path.id]}
-              ${isSelected
-                ? 'shadow-lg scale-[1.02] ring-2 ring-offset-2'
-                : 'shadow-sm hover:shadow-md hover:scale-[1.01]'
-              }
-              hover:border-opacity-70
+              cursor-pointer transition-all duration-300
+              bg-gradient-to-br ${config.gradient}
+              border ${isSelected ? config.activeBorder : config.border}
+              ${isSelected ? 'shadow-md' : 'shadow-sm hover:shadow-md'}
+              hover:scale-[1.005]
             `}
             onClick={() => setSelectedLifePath(path)}
           >
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {pathIcons[path.id]}
-                  <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
+                <div className="flex items-center gap-2.5">
+                  {config.icon}
+                  <span className="font-display text-lg font-semibold text-warm-800">
                     {path.name}
                   </span>
                 </div>
                 {isSelected && (
-                  <Badge 
-                    variant={"default" as const} 
-                    className="text-xs bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm animate-in fade-in-50 duration-200"
-                  >
-                    ✓ Seleccionado
+                  <Badge className={`text-[10px] px-1.5 py-0 ${config.badgeBg} text-white border-0`}>
+                    Activo
                   </Badge>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <p className="text-xs text-slate-600 leading-relaxed mb-3">
+              <p className="text-xs text-warm-500 leading-relaxed mb-3">
                 {path.description}
               </p>
-              
+
               {isSelected && (
-                <div className="space-y-3">
+                <div className="space-y-3 animate-fade-in">
                   <div>
-                    <p className="text-xs font-medium text-slate-700 mb-1">Características:</p>
-                    <ul className="text-xs text-slate-600 space-y-0.5">
-                      {path.characteristics.slice(0, 3).map((char, index) => (
-                        <li key={index} className="flex items-start gap-1">
-                          <span className="text-blue-600 mt-0.5">•</span>
+                    <p className="text-[11px] font-semibold text-warm-600 mb-1 uppercase tracking-wider">Características</p>
+                    <ul className="text-xs text-warm-500 space-y-0.5">
+                      {path.characteristics.slice(0, 3).map((char, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-warm-300 mt-0.5">—</span>
                           <span>{char}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
+
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-xs font-medium text-green-700 mb-1">Beneficios:</p>
-                      <ul className="text-xs text-slate-600 space-y-0.5">
-                        {path.benefits.slice(0, 2).map((benefit, index) => (
-                          <li key={index} className="flex items-start gap-1">
-                            <span className="text-green-600 mt-0.5">+</span>
-                            <span>{benefit}</span>
+                      <p className="text-[11px] font-semibold text-green-700 mb-1 uppercase tracking-wider">Beneficios</p>
+                      <ul className="text-xs text-warm-500 space-y-0.5">
+                        {path.benefits.slice(0, 2).map((b, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-green-400 mt-0.5">+</span>
+                            <span>{b}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    
                     <div>
-                      <p className="text-xs font-medium text-red-700 mb-1">Riesgos:</p>
-                      <ul className="text-xs text-slate-600 space-y-0.5">
-                        {path.risks.slice(0, 2).map((risk, index) => (
-                          <li key={index} className="flex items-start gap-1">
-                            <span className="text-red-600 mt-0.5">-</span>
-                            <span>{risk}</span>
+                      <p className="text-[11px] font-semibold text-red-600 mb-1 uppercase tracking-wider">Riesgos</p>
+                      <ul className="text-xs text-warm-500 space-y-0.5">
+                        {path.risks.slice(0, 2).map((r, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-red-400 mt-0.5">-</span>
+                            <span>{r}</span>
                           </li>
                         ))}
                       </ul>
@@ -118,11 +122,11 @@ export default function LifePathsPanel() {
                   </div>
 
                   <div>
-                    <p className="text-xs font-medium text-slate-700 mb-1">Motivaciones:</p>
+                    <p className="text-[11px] font-semibold text-warm-600 mb-1 uppercase tracking-wider">Motivaciones</p>
                     <div className="flex flex-wrap gap-1">
-                      {path.motivations.slice(0, 2).map((motivation, index) => (
-                        <Badge key={index} variant={"outline" as const} className="text-xs">
-                          {motivation}
+                      {path.motivations.slice(0, 3).map((m, i) => (
+                        <Badge key={i} variant="outline" className="text-[10px] border-warm-300 text-warm-600">
+                          {m}
                         </Badge>
                       ))}
                     </div>
@@ -131,39 +135,22 @@ export default function LifePathsPanel() {
               )}
             </CardContent>
           </Card>
-          );
-        })}
-      </div>
+        );
+      })}
 
-      {/* Current path info */}
-      {selectedLifePath && (
-        <div className="p-4 border-t border-blue-200 bg-blue-50/50">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              {pathIcons[selectedLifePath.id]}
-              <span className="text-base md:text-lg lg:text-xl font-semibold text-slate-800">
-                {selectedLifePath.name}
-              </span>
-            </div>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Cuando un muñeco apunte hacia esta dirección, estará siguiendo este camino de vida.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Instructions */}
-      <div className="p-2 border-t border-blue-200 bg-slate-50/50 mb-16 md:mb-24">
-        <div className="text-xs md:text-sm text-slate-700 space-y-1 flex flex-col">
-          <span className="flex items-center gap-2 font-semibold text-blue-800 mb-1">
-            <Lightbulb className="w-4 h-4 text-blue-500" /> Metodología de los Caminos de Vida
-          </span>
-          <span><strong>1. Selección</strong><br/>Elige el muñeco que representa a la persona desde la biblioteca de muñecos</span>
-          <span><strong>2. Caída Fenomenológica</strong><br/>El sistema coloca automática y aleatoriamente la figura en el lienzo</span>
-          <span><strong>3. Lectura de la Orientación</strong><br/>Observa hacia qué dirección apuntan y posición de los muñecos</span>
-          <span><strong>4. Análisis Sistémico</strong><br/>Analiza los patrones e interacciones revelados</span>
-          <span><strong>5. Exploración Terapéutica</strong><br/>Formula las preguntas clave para profundizar en el proceso</span>
-        </div>
+      {/* Methodology note */}
+      <div className="mt-4 p-3 bg-warm-50/80 rounded-lg border border-warm-200/40">
+        <p className="flex items-center gap-1.5 text-[11px] font-semibold text-warm-600 mb-1">
+          <Lightbulb className="w-3.5 h-3.5 text-terracotta-400" />
+          Metodología
+        </p>
+        <ol className="text-[11px] text-warm-500 space-y-0.5 list-decimal list-inside">
+          <li>Selecciona el muñeco desde la biblioteca</li>
+          <li>Observa la caída fenomenológica en el lienzo</li>
+          <li>Lee la orientación y camino de vida</li>
+          <li>Analiza patrones e interacciones</li>
+          <li>Formula preguntas terapéuticas</li>
+        </ol>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -8,24 +8,48 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-touch-fullscreen" content="yes" />
   <title>Los Cuatro Caminos de Vida - Playworld Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --background: 210 11% 98%; /* #F5F7FA */
-      --foreground: 222 47% 11%; /* #1A1B23 */
-      --primary: 221 83% 53%; /* #3B82F6 */
-      --primary-foreground: 210 40% 98%; /* #F8FAFC */
-      --secondary: 210 40% 94%; /* #E2E8F0 */
-      --secondary-foreground: 222 47% 11%; /* #1A1B23 */
-      --muted: 210 40% 96%; /* #F1F5F9 */
-      --muted-foreground: 215 13% 65%; /* #94A3B8 */
-      --accent: 210 40% 94%; /* #E2E8F0 */
-      --accent-foreground: 222 47% 11%; /* #1A1B23 */
-      --destructive: 0 84% 60%; /* #EF4444 */
-      --destructive-foreground: 210 40% 98%; /* #F8FAFC */
-      --border: 214 32% 91%; /* #CBD5E1 */
-      --input: 214 32% 91%; /* #CBD5E1 */
-      --ring: 221 83% 53%; /* #3B82F6 */
-      --radius: 0.5rem;
+      /* Warm, earthy palette for therapeutic context */
+      --background: 36 25% 97%; /* warm ivory */
+      --foreground: 24 10% 15%; /* deep warm charcoal */
+      --primary: 24 60% 40%; /* warm terracotta */
+      --primary-foreground: 36 30% 96%;
+      --secondary: 36 20% 92%; /* warm sand */
+      --secondary-foreground: 24 10% 20%;
+      --muted: 36 15% 94%;
+      --muted-foreground: 24 8% 55%;
+      --accent: 36 25% 90%;
+      --accent-foreground: 24 10% 15%;
+      --destructive: 0 65% 50%;
+      --destructive-foreground: 36 30% 96%;
+      --border: 30 18% 86%;
+      --input: 30 18% 86%;
+      --ring: 24 60% 40%;
+      --radius: 0.625rem;
+
+      /* Life path accent colors */
+      --path-north: 210 65% 45%; /* deep ocean blue */
+      --path-south: 0 60% 48%; /* warm crimson */
+      --path-east: 45 75% 50%; /* golden amber */
+      --path-west: 160 40% 38%; /* sage green */
+
+      /* Typography */
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Outfit', system-ui, sans-serif;
+
+      /* Studio chrome (dark panels) */
+      --chrome-bg: 24 12% 12%;
+      --chrome-surface: 24 10% 16%;
+      --chrome-hover: 24 10% 20%;
+      --chrome-border: 24 8% 22%;
+      --chrome-text: 36 20% 85%;
+      --chrome-text-muted: 24 10% 55%;
+      --chrome-accent: 36 65% 55%;
+      --chrome-accent-hover: 36 65% 62%;
     }
   </style>
 </head>

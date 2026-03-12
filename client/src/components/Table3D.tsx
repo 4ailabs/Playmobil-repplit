@@ -24,8 +24,8 @@ export default function Table3D() {
       
       logger.debug('Posición de colocación:', point);
       
-      // Check if position is within table bounds (rectangular: 12 wide x 14 deep - Aumentado)
-      if (Math.abs(point.x) <= 6 && Math.abs(point.z) <= 7) {
+      // Check if position is within table bounds (rectangular: 14 wide x 18 deep N-S)
+      if (Math.abs(point.x) <= 7 && Math.abs(point.z) <= 9) {
         const newDoll = {
           ...draggedDoll,
           id: `placed-${Date.now()}`,
@@ -45,7 +45,7 @@ export default function Table3D() {
 
   return (
     <group>
-      {/* Rectangular area on the floor - Aumentado de 8x10 a 12x14 */}
+      {/* Table surface - 14 wide (E-O) x 18 deep (N-S), darker for shadow contrast */}
       <mesh
         ref={meshRef}
         position={[0, 0.01, 0]}
@@ -53,16 +53,43 @@ export default function Table3D() {
         onPointerDown={handlePointerDown}
         receiveShadow
       >
-        <planeGeometry args={[12, 14]} />
-        <meshLambertMaterial color="#FFFFFF" />
+        <planeGeometry args={[14, 18]} />
+        <meshPhysicalMaterial
+          color="#D9D3CC"
+          roughness={0.5}
+          metalness={0.02}
+          clearcoat={0.2}
+          clearcoatRoughness={0.4}
+        />
       </mesh>
 
-      {/* Cardinal direction labels - single letters - Ajustadas para mesa más grande */}
+      {/* Table border - thin raised edges */}
+      {[
+        { pos: [0, 0.02, -9] as [number, number, number], scale: [14.1, 0.04, 0.1] as [number, number, number] },
+        { pos: [0, 0.02, 9] as [number, number, number], scale: [14.1, 0.04, 0.1] as [number, number, number] },
+        { pos: [-7, 0.02, 0] as [number, number, number], scale: [0.1, 0.04, 18.1] as [number, number, number] },
+        { pos: [7, 0.02, 0] as [number, number, number], scale: [0.1, 0.04, 18.1] as [number, number, number] },
+      ].map((edge, i) => (
+        <mesh key={`border-${i}`} position={edge.pos} scale={edge.scale}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#D5CCC2" roughness={0.5} metalness={0.02} />
+        </mesh>
+      ))}
+
+      {/* Subtle concentric zone guides */}
+      {[2.0, 4.0, 6.0].map((radius, i) => (
+        <mesh key={`guide-${i}`} position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[radius - 0.02, radius, 48]} />
+          <meshBasicMaterial color="#D5CCC2" transparent opacity={0.12} />
+        </mesh>
+      ))}
+
+      {/* Cardinal direction labels */}
       <Text
-        position={[0, 0.02, -6.8]}
+        position={[0, 0.02, -8.7]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.8}
-        color="black"
+        fontSize={0.6}
+        color="#9B8E82"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
@@ -71,10 +98,10 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[0, 0.02, 6.8]}
+        position={[0, 0.02, 8.7]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.8}
-        color="black"
+        fontSize={0.6}
+        color="#9B8E82"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
@@ -83,10 +110,10 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[5.8, 0.02, 0]}
+        position={[6.7, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.8}
-        color="black"
+        fontSize={0.6}
+        color="#9B8E82"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
@@ -95,10 +122,10 @@ export default function Table3D() {
       </Text>
 
       <Text
-        position={[-5.8, 0.02, 0]}
+        position={[-6.7, 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        fontSize={0.8}
-        color="black"
+        fontSize={0.6}
+        color="#9B8E82"
         anchorX="center"
         anchorY="middle"
         fontWeight="bold"
@@ -107,9 +134,9 @@ export default function Table3D() {
       </Text>
 
       {/* Center reference point */}
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.2, 16]} />
-        <meshBasicMaterial color="#DDDDDD" transparent opacity={0.4} />
+      <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.15, 16]} />
+        <meshBasicMaterial color="#C4B9AD" transparent opacity={0.3} />
       </mesh>
     </group>
   );

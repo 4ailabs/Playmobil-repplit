@@ -4,21 +4,18 @@
 
 /* iPad and touch device optimizations */
 @media (pointer: coarse) {
-  /* Larger touch targets for iPad */
   button, .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
-  
-  /* Prevent text selection on touch */
+
   * {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
   }
-  
-  /* Allow text selection only where needed */
+
   input, textarea {
     -webkit-user-select: text;
     -moz-user-select: text;
@@ -37,12 +34,10 @@
 
 /* iPad specific styling */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  /* Optimize for iPad landscape and portrait */
   .sidebar {
     transition: transform 0.3s ease;
   }
-  
-  /* Better touch feedback */
+
   .touch-feedback:active {
     transform: scale(0.95);
     transition: transform 0.1s ease;
@@ -55,12 +50,88 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-body);
+    @apply antialiased bg-background text-foreground;
     margin: 0;
     padding: 0;
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  /* Warm paper texture overlay */
+  .bg-warm-paper {
+    background-color: hsl(36 25% 97%);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, hsla(30, 40%, 90%, 0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, hsla(24, 30%, 88%, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, hsla(36, 25%, 92%, 0.3) 0%, transparent 50%);
+  }
+
+  /* Subtle noise grain effect */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Warm glass morphism (light) */
+  .glass-warm {
+    background: hsla(36, 25%, 97%, 0.85);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid hsla(30, 20%, 80%, 0.5);
+  }
+
+  /* Dark studio chrome panels */
+  .chrome-panel {
+    background: hsl(var(--chrome-bg));
+    border-color: hsl(var(--chrome-border));
+  }
+
+  .chrome-panel-surface {
+    background: hsl(var(--chrome-surface));
+  }
+
+  .chrome-divider {
+    border-color: hsla(24, 8%, 28%, 0.6);
+  }
+
+  /* Life path color utilities */
+  .path-north { color: hsl(var(--path-north)); }
+  .path-south { color: hsl(var(--path-south)); }
+  .path-east { color: hsl(var(--path-east)); }
+  .path-west { color: hsl(var(--path-west)); }
+
+  .bg-path-north { background-color: hsl(var(--path-north)); }
+  .bg-path-south { background-color: hsl(var(--path-south)); }
+  .bg-path-east { background-color: hsl(var(--path-east)); }
+  .bg-path-west { background-color: hsl(var(--path-west)); }
+
+  /* Elegant scrollbar */
+  .scrollbar-warm::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-warm::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-warm::-webkit-scrollbar-thumb {
+    background: hsla(24, 10%, 35%, 0.5);
+    border-radius: 10px;
+  }
+  .scrollbar-warm::-webkit-scrollbar-thumb:hover {
+    background: hsla(24, 10%, 45%, 0.6);
   }
 }
 
@@ -77,7 +148,6 @@ canvas {
   display: block;
 }
 
-/* Asegurar que el contenedor del canvas ocupe todo el espacio */
 .three-container {
   width: 100%;
   height: 100%;

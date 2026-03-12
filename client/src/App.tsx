@@ -1,19 +1,19 @@
-import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
-import "@fontsource/inter";
 import { Toaster } from "sonner";
 import TherapyApp from "./components/TherapyApp";
 
 function App() {
   return (
-    <div className="w-full h-screen bg-gradient-to-br from-blue-50 to-slate-100 overflow-hidden">
+    <div className="w-full h-screen bg-warm-paper overflow-hidden relative grain">
       <TherapyApp />
-      <Toaster 
-        position="top-right" 
-        richColors 
-        closeButton 
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
         expand={false}
         duration={3000}
+        toastOptions={{
+          className: "font-body",
+        }}
       />
     </div>
   );

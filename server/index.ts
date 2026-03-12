@@ -59,11 +59,12 @@ app.use((req, res, next) => {
   // Serve the app on port 3000 (5000 is often used by AirPlay on Mac)
   // this serves both the API and the client
   const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+  const host = process.env.HOST || "127.0.0.1";
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true,
+    host,
+    reusePort: false,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`serving on http://${host}:${port}`);
   });
 })();

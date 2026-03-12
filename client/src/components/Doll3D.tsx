@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, memo, useMemo } from "react";
+import { useRef, useState, memo, useMemo } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { PlacedDoll } from "../lib/types";
@@ -13,59 +13,80 @@ interface Doll3DProps {
 
 // Geometrías compartidas - Estilo Playmobil: cabeza grande, cuerpo simple
 const SIZE_MULTIPLIER = 1.5;
+const SKIN_COLOR = "#FDDCB1"; // Color piel clásico Playmobil
 
 const sharedGeometries = {
   // Cuerpos estilo Playmobil: cilindros simples y rectos
   bodyAdult: new THREE.CylinderGeometry(0.16 * SIZE_MULTIPLIER, 0.16 * SIZE_MULTIPLIER, 0.5 * SIZE_MULTIPLIER, 12),
   bodyChild: new THREE.CylinderGeometry(0.12 * SIZE_MULTIPLIER, 0.12 * SIZE_MULTIPLIER, 0.4 * SIZE_MULTIPLIER, 12),
   bodyBaby: new THREE.CylinderGeometry(0.09 * SIZE_MULTIPLIER, 0.09 * SIZE_MULTIPLIER, 0.3 * SIZE_MULTIPLIER, 12),
-  
+
   // Cabezas estilo Playmobil: grandes y redondas (característica distintiva)
-  headAdult: new THREE.SphereGeometry(0.18 * SIZE_MULTIPLIER, 20, 20), // Cabeza grande característica
+  headAdult: new THREE.SphereGeometry(0.18 * SIZE_MULTIPLIER, 20, 20),
   headChild: new THREE.SphereGeometry(0.14 * SIZE_MULTIPLIER, 20, 20),
   headBaby: new THREE.SphereGeometry(0.11 * SIZE_MULTIPLIER, 20, 20),
-  
+
   // Extremidades delgadas estilo Playmobil
   arm: new THREE.CylinderGeometry(0.035 * SIZE_MULTIPLIER, 0.035 * SIZE_MULTIPLIER, 0.3 * SIZE_MULTIPLIER, 8),
-  leg: new THREE.CylinderGeometry(0.04 * SIZE_MULTIPLIER, 0.04 * SIZE_MULTIPLIER, 0.15 * SIZE_MULTIPLIER, 8), // Piernas más cortas estilo Playmobil
-  
+  leg: new THREE.CylinderGeometry(0.04 * SIZE_MULTIPLIER, 0.04 * SIZE_MULTIPLIER, 0.15 * SIZE_MULTIPLIER, 8),
+
+  // Manos y zapatos
+  hand: new THREE.SphereGeometry(0.045 * SIZE_MULTIPLIER, 10, 10),
+  shoe: new THREE.CylinderGeometry(0.055 * SIZE_MULTIPLIER, 0.06 * SIZE_MULTIPLIER, 0.04 * SIZE_MULTIPLIER, 8),
+
   // Detalles faciales Playmobil: ojos grandes y simples
   eye: new THREE.SphereGeometry(0.03 * SIZE_MULTIPLIER, 12, 12),
   pupil: new THREE.SphereGeometry(0.015 * SIZE_MULTIPLIER, 8, 8),
-  
-  // Formas geométricas (sin cambios)
+
+  // Expresiones faciales
+  mouthSmile: new THREE.TorusGeometry(0.055 * SIZE_MULTIPLIER, 0.008 * SIZE_MULTIPLIER, 6, 12, Math.PI),
+  mouthFlat: new THREE.BoxGeometry(0.07 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER),
+  mouthOpen: new THREE.RingGeometry(0, 0.025 * SIZE_MULTIPLIER, 12),
+  eyebrow: new THREE.BoxGeometry(0.045 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER),
+
+  // Formas geométricas
   sphere: new THREE.SphereGeometry(0.25 * SIZE_MULTIPLIER, 20, 20),
   cone: new THREE.ConeGeometry(0.06 * SIZE_MULTIPLIER, 0.18 * SIZE_MULTIPLIER, 4),
   cylinder: new THREE.CylinderGeometry(0.025 * SIZE_MULTIPLIER, 0.025 * SIZE_MULTIPLIER, 0.18 * SIZE_MULTIPLIER, 8),
   ring: new THREE.RingGeometry(0.3 * SIZE_MULTIPLIER, 0.35 * SIZE_MULTIPLIER, 20),
-  
-  // Accesorios Playmobil: sombreros, cabello
-  hat: new THREE.CylinderGeometry(0.2 * SIZE_MULTIPLIER, 0.2 * SIZE_MULTIPLIER, 0.08 * SIZE_MULTIPLIER, 12), // Sombrero simple
-  hairLong: new THREE.SphereGeometry(0.19 * SIZE_MULTIPLIER, 16, 16), // Cabello largo
-  hairShort: new THREE.BoxGeometry(0.22 * SIZE_MULTIPLIER, 0.1 * SIZE_MULTIPLIER, 0.22 * SIZE_MULTIPLIER), // Cabello corto
+
+  // Accesorios Playmobil: sombreros, cabello (más ajustados a la cabeza)
+  hat: new THREE.CylinderGeometry(0.17 * SIZE_MULTIPLIER, 0.17 * SIZE_MULTIPLIER, 0.06 * SIZE_MULTIPLIER, 12),
+  hairLong: new THREE.SphereGeometry(0.16 * SIZE_MULTIPLIER, 16, 16),
+  hairShort: new THREE.BoxGeometry(0.19 * SIZE_MULTIPLIER, 0.08 * SIZE_MULTIPLIER, 0.19 * SIZE_MULTIPLIER),
 };
 
-// Materiales compartidos - Colores sólidos estilo Playmobil
+// Materiales compartidos - Estilo plástico brillante Playmobil
 const sharedMaterials = {
-  eyeWhite: new THREE.MeshStandardMaterial({ 
+  skin: new THREE.MeshStandardMaterial({
+    color: SKIN_COLOR,
+    roughness: 0.35,
+    metalness: 0.02,
+  }),
+  eyeWhite: new THREE.MeshStandardMaterial({
     color: "#FFFFFF",
     roughness: 0.1,
     metalness: 0.0,
     emissive: "#FFFFFF",
     emissiveIntensity: 0.1
   }),
-  eyeBlack: new THREE.MeshStandardMaterial({ 
+  eyeBlack: new THREE.MeshStandardMaterial({
     color: "#000000",
     roughness: 0.3,
     metalness: 0.0
   }),
-  directionArrow: new THREE.MeshStandardMaterial({ 
+  faceDark: new THREE.MeshStandardMaterial({
+    color: "#2D1B0E",
+    roughness: 0.4,
+    metalness: 0.0,
+  }),
+  directionArrow: new THREE.MeshStandardMaterial({
     color: "#FF6B6B",
     emissive: "#FF6B6B",
     emissiveIntensity: 0.3,
     roughness: 0.5
   }),
-  directionLine: new THREE.MeshStandardMaterial({ 
+  directionLine: new THREE.MeshStandardMaterial({
     color: "#FF6B6B",
     emissive: "#FF6B6B",
     emissiveIntensity: 0.2,
@@ -78,14 +99,13 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
   const [hovered, setHovered] = useState(false);
   const { setDraggedDoll, setIsDragging, isDragging, updateDollRotation, selectedDollId, setSelectedDollId } = useTherapy();
 
-  // Escalas según edad - estilo Playmobil
+  // Escalas según edad - proporciones más contenidas
   const ageScale = useMemo(() => {
-    const baseMultiplier = 1.3;
-    if (doll.dollType.id.includes('baby')) return 0.7 * baseMultiplier;
-    if (doll.dollType.id.includes('child') || doll.dollType.id.includes('teen')) return 0.9 * baseMultiplier;
-    if (doll.dollType.category === 'father' || doll.dollType.category === 'mother') return 1.3 * baseMultiplier;
-    if (doll.dollType.category === 'grandfather' || doll.dollType.category === 'grandmother') return 1.1 * baseMultiplier;
-    return 1.0 * baseMultiplier;
+    if (doll.dollType.id.includes('baby')) return 0.75;
+    if (doll.dollType.id.includes('child') || doll.dollType.id.includes('teen')) return 0.9;
+    if (doll.dollType.category === 'father' || doll.dollType.category === 'mother') return 1.15;
+    if (doll.dollType.category === 'grandfather' || doll.dollType.category === 'grandmother') return 1.05;
+    return 1.0;
   }, [doll.dollType.id, doll.dollType.category]);
 
   const scale = hovered ? ageScale * 1.15 : ageScale;
@@ -110,6 +130,7 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
   }, [doll.dollType.id]);
 
   const isBaby = useMemo(() => doll.dollType.id.includes('baby'), [doll.dollType.id]);
+  const isTeen = useMemo(() => doll.dollType.id.includes('teen'), [doll.dollType.id]);
   const isChild = useMemo(() => doll.dollType.id.includes('child') || doll.dollType.id.includes('teen'), [doll.dollType.id]);
   const isAdult = useMemo(() => 
     doll.dollType.category === 'father' || 
@@ -119,14 +140,28 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
     [doll.dollType.category]
   );
 
+  // Expresión facial basada en emoción
+  const faceExpression = useMemo(() => {
+    const emotion = doll.emotion || 'neutral';
+    switch (emotion) {
+      case 'happy':
+        return { mouthType: 'smile' as const, eyebrowAngle: 0, showEyebrows: false };
+      case 'sad':
+        return { mouthType: 'frown' as const, eyebrowAngle: 0.25, showEyebrows: true };
+      case 'angry':
+        return { mouthType: 'flat' as const, eyebrowAngle: -0.3, showEyebrows: true };
+      case 'anxious':
+        return { mouthType: 'open' as const, eyebrowAngle: 0.2, showEyebrows: true };
+      default:
+        return { mouthType: 'flat' as const, eyebrowAngle: 0, showEyebrows: false };
+    }
+  }, [doll.emotion]);
+
   // Gaze direction - Independiente de la dirección de caminar
-  // La mirada puede ser diferente de la dirección del cuerpo, pero limitada a un rango realista (±90 grados máximo)
-  // Los humanos no pueden girar la cabeza 180 grados
   const gazeOffset = useMemo(() => {
     const followsBody = Math.random() > 0.5;
-    if (followsBody) return 0; // A veces miran en la misma dirección que caminan
-    // Limitar a ±90 grados máximo (rango realista de movimiento de cabeza humano)
-    return (Math.random() - 0.5) * Math.PI / 2; // Entre -90 y +90 grados
+    if (followsBody) return 0;
+    return (Math.random() - 0.5) * Math.PI / 2;
   }, []);
 
   // Animación suave
@@ -308,10 +343,10 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
         </mesh>
 
         <group rotation={[0, gazeOffset, 0]}>
-          <mesh position={[-0.06 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.22 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
-          <mesh position={[0.06 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.22 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
-          <mesh position={[-0.06 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.24 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
-          <mesh position={[0.06 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.24 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
+          <mesh position={[-0.045 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.22 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
+          <mesh position={[0.045 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.22 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
+          <mesh position={[-0.045 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.24 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
+          <mesh position={[0.045 * SIZE_MULTIPLIER, 0.52 * SIZE_MULTIPLIER, 0.24 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
         </group>
 
         {isPlaced && (
@@ -342,12 +377,13 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
   }
 
   // Muñeco estilo Playmobil: cabeza grande, cuerpo simple, extremidades delgadas
-  const bodyHeight = isBaby ? 0.3 : isChild ? 0.4 : 0.5;
-  const bodyTopY = bodyHeight * SIZE_MULTIPLIER; // Parte superior del cuerpo (centro del cilindro + mitad de altura)
+  // Teens: cuerpo de adulto pero cabeza de child para evitar cabezones
+  const bodyHeight = isBaby ? 0.3 : (isChild && !isTeen) ? 0.4 : 0.5;
+  const bodyTopY = bodyHeight * SIZE_MULTIPLIER;
   const headRadius = isBaby ? 0.11 * SIZE_MULTIPLIER : isChild ? 0.14 * SIZE_MULTIPLIER : 0.18 * SIZE_MULTIPLIER;
-  const headY = bodyTopY + headRadius; // Cabeza conectada directamente al cuerpo (centro de la cabeza en la parte superior del cuerpo + radio)
+  const headY = bodyTopY + headRadius;
   const headSize = isBaby ? sharedGeometries.headBaby : isChild ? sharedGeometries.headChild : sharedGeometries.headAdult;
-  const bodyGeometry = isBaby ? sharedGeometries.bodyBaby : isChild ? sharedGeometries.bodyChild : sharedGeometries.bodyAdult;
+  const bodyGeometry = isBaby ? sharedGeometries.bodyBaby : (isChild && !isTeen) ? sharedGeometries.bodyChild : sharedGeometries.bodyAdult;
 
   return (
     <group
@@ -361,134 +397,140 @@ function Doll3DComponent({ doll, isPlaced }: Doll3DProps) {
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
     >
-      {/* Cuerpo estilo Playmobil: cilindro simple y recto - Rota con el cuerpo */}
+      {/* Cuerpo - plástico brillante estilo Playmobil */}
       <mesh position={[0, bodyHeight * SIZE_MULTIPLIER / 2, 0]} castShadow>
         <primitive object={bodyGeometry.clone()} />
         <meshStandardMaterial
           color={dollColor}
-          roughness={0.6} // Más brillante estilo juguete
-          metalness={0.0}
+          roughness={0.25}
+          metalness={0.05}
           flatShading={false}
         />
       </mesh>
 
-      {/* Cabeza estilo Playmobil: grande y redonda - Rota según la mirada (como humanos) */}
-      {/* La cabeza rota independientemente del cuerpo para mirar en otra dirección */}
+      {/* Cabeza - color piel, rota según mirada */}
       <group position={[0, headY, 0]} rotation={[0, gazeOffset, 0]}>
-        {/* Cabeza */}
         <mesh castShadow>
           <primitive object={headSize.clone()} />
           <meshStandardMaterial
-            color={dollColor.clone().multiplyScalar(0.95)}
-            roughness={0.5} // Más brillante
-            metalness={0.0}
+            color={SKIN_COLOR}
+            roughness={0.35}
+            metalness={0.02}
             flatShading={false}
           />
         </mesh>
-        
-        {/* Accesorios estilo Playmobil según género y edad - Rotan con la cabeza */}
+
+        {/* Cabello / accesorios */}
         {!isBaby && (
           <>
             {isFemale ? (
-              // Cabello largo para mujeres
-              <mesh 
-                position={[0, 0.15 * SIZE_MULTIPLIER, -0.02 * SIZE_MULTIPLIER]} 
-                castShadow
-              >
+              <mesh position={[0, 0.1 * SIZE_MULTIPLIER, -0.02 * SIZE_MULTIPLIER]} castShadow>
                 <primitive object={sharedGeometries.hairLong.clone()} />
-                <meshStandardMaterial
-                  color={dollColor.clone().multiplyScalar(0.5)}
-                  roughness={0.7}
-                  metalness={0.0}
-                />
+                <meshStandardMaterial color={dollColor.clone().multiplyScalar(0.5)} roughness={0.4} metalness={0.0} />
+              </mesh>
+            ) : isAdult ? (
+              <mesh position={[0, 0.08 * SIZE_MULTIPLIER, 0]} castShadow>
+                <primitive object={sharedGeometries.hat.clone()} />
+                <meshStandardMaterial color={dollColor.clone().multiplyScalar(0.4)} roughness={0.35} metalness={0.0} />
               </mesh>
             ) : (
-              // Cabello corto o sombrero para hombres adultos
-              isAdult ? (
-                <mesh 
-                  position={[0, 0.1 * SIZE_MULTIPLIER, 0]} 
-                  castShadow
-                >
-                  <primitive object={sharedGeometries.hat.clone()} />
-                  <meshStandardMaterial
-                    color={dollColor.clone().multiplyScalar(0.4)}
-                    roughness={0.6}
-                    metalness={0.0}
-                  />
-                </mesh>
-              ) : (
-                // Cabello corto para niños
-                <mesh 
-                  position={[0, 0.1 * SIZE_MULTIPLIER, 0]} 
-                  castShadow
-                >
-                  <primitive object={sharedGeometries.hairShort.clone()} />
-                  <meshStandardMaterial
-                    color={dollColor.clone().multiplyScalar(0.5)}
-                    roughness={0.7}
-                    metalness={0.0}
-                  />
-                </mesh>
-              )
+              <mesh position={[0, 0.08 * SIZE_MULTIPLIER, 0]} castShadow>
+                <primitive object={sharedGeometries.hairShort.clone()} />
+                <meshStandardMaterial color={dollColor.clone().multiplyScalar(0.5)} roughness={0.4} metalness={0.0} />
+              </mesh>
             )}
           </>
         )}
-        
+
         {/* Lazo para bebés femeninos */}
         {isFemale && isBaby && (
-          <mesh 
-            position={[0, 0.05 * SIZE_MULTIPLIER, 0.12 * SIZE_MULTIPLIER]} 
-            rotation={[0, 0, 0]}
-            castShadow
-          >
+          <mesh position={[0, 0.05 * SIZE_MULTIPLIER, 0.12 * SIZE_MULTIPLIER]} castShadow>
             <torusGeometry args={[0.05 * SIZE_MULTIPLIER, 0.015 * SIZE_MULTIPLIER, 8, 16]} />
-            <meshStandardMaterial
-              color={dollColor.clone().multiplyScalar(1.3)}
-              roughness={0.5}
-              metalness={0.1}
-            />
+            <meshStandardMaterial color={dollColor.clone().multiplyScalar(1.3)} roughness={0.3} metalness={0.1} />
           </mesh>
         )}
 
-        {/* Ojos estilo Playmobil: grandes y simples - Fijos en la cabeza (la cabeza ya rota según la mirada) */}
-        <mesh position={[-0.07 * SIZE_MULTIPLIER, 0, 0.18 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
-        <mesh position={[0.07 * SIZE_MULTIPLIER, 0, 0.18 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
-        <mesh position={[-0.07 * SIZE_MULTIPLIER, 0, 0.21 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
-        <mesh position={[0.07 * SIZE_MULTIPLIER, 0, 0.21 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
+        {/* Ojos — más juntos para look Playmobil */}
+        <mesh position={[-0.05 * SIZE_MULTIPLIER, 0, 0.18 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
+        <mesh position={[0.05 * SIZE_MULTIPLIER, 0, 0.18 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.eye} material={sharedMaterials.eyeWhite} />
+        <mesh position={[-0.05 * SIZE_MULTIPLIER, 0, 0.21 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
+        <mesh position={[0.05 * SIZE_MULTIPLIER, 0, 0.21 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.pupil} material={sharedMaterials.eyeBlack} />
+
+        {/* Boca - expresión según emoción */}
+        {faceExpression.mouthType === 'smile' && (
+          <mesh position={[0, -0.06 * SIZE_MULTIPLIER, 0.17 * SIZE_MULTIPLIER]} rotation={[0, 0, Math.PI]} geometry={sharedGeometries.mouthSmile} material={sharedMaterials.faceDark} />
+        )}
+        {faceExpression.mouthType === 'frown' && (
+          <mesh position={[0, -0.06 * SIZE_MULTIPLIER, 0.17 * SIZE_MULTIPLIER]} rotation={[0, 0, 0]} geometry={sharedGeometries.mouthSmile} material={sharedMaterials.faceDark} />
+        )}
+        {faceExpression.mouthType === 'flat' && (
+          <mesh position={[0, -0.06 * SIZE_MULTIPLIER, 0.17 * SIZE_MULTIPLIER]} geometry={sharedGeometries.mouthFlat} material={sharedMaterials.faceDark} />
+        )}
+        {faceExpression.mouthType === 'open' && (
+          <mesh position={[0, -0.06 * SIZE_MULTIPLIER, 0.175 * SIZE_MULTIPLIER]} rotation={[0, 0, 0]} geometry={sharedGeometries.mouthOpen} material={sharedMaterials.faceDark} />
+        )}
+
+        {/* Cejas - solo para emociones fuertes */}
+        {faceExpression.showEyebrows && (
+          <>
+            <mesh
+              position={[-0.05 * SIZE_MULTIPLIER, 0.04 * SIZE_MULTIPLIER, 0.18 * SIZE_MULTIPLIER]}
+              rotation={[0, 0, faceExpression.eyebrowAngle]}
+              geometry={sharedGeometries.eyebrow}
+              material={sharedMaterials.faceDark}
+            />
+            <mesh
+              position={[0.05 * SIZE_MULTIPLIER, 0.04 * SIZE_MULTIPLIER, 0.18 * SIZE_MULTIPLIER]}
+              rotation={[0, 0, -faceExpression.eyebrowAngle]}
+              geometry={sharedGeometries.eyebrow}
+              material={sharedMaterials.faceDark}
+            />
+          </>
+        )}
       </group>
 
-      {/* Brazos estilo Playmobil: delgados - Alineados con la dirección del cuerpo (coinciden con la flecha) */}
-      {/* ESTRATEGIA CORRECTA: Los cilindros de brazos están verticales (eje Y) por defecto */}
-      {/* Para que apunten hacia ADELANTE necesitan rotar 90° en X, luego ajustar Z para separarlos */}
-      {/* Brazo izquierdo: rotar 90° en X para que apunte adelante, luego 20° en Z para separarlo del cuerpo */}
-      <mesh 
-        position={[-0.16 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.65, 0.08 * SIZE_MULTIPLIER]} 
-        rotation={[Math.PI / 2, 0, 0.35]} 
-        castShadow 
+      {/* Brazos (ropa) + manos (piel) */}
+      <mesh
+        position={[-0.16 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.65, 0.08 * SIZE_MULTIPLIER]}
+        rotation={[Math.PI / 2, 0, 0.35]}
+        castShadow
         geometry={sharedGeometries.arm}
       >
-        <meshStandardMaterial color={dollColor} roughness={0.6} metalness={0.0} />
+        <meshStandardMaterial color={dollColor} roughness={0.25} metalness={0.05} />
       </mesh>
-      {/* Brazo derecho: rotar 90° en X para que apunte adelante, luego -20° en Z para separarlo del cuerpo */}
-      <mesh 
-        position={[0.16 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.65, 0.08 * SIZE_MULTIPLIER]} 
-        rotation={[Math.PI / 2, 0, -0.35]} 
-        castShadow 
+      <mesh
+        position={[-0.19 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.52, 0.2 * SIZE_MULTIPLIER]}
+        castShadow
+        geometry={sharedGeometries.hand}
+        material={sharedMaterials.skin}
+      />
+      <mesh
+        position={[0.16 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.65, 0.08 * SIZE_MULTIPLIER]}
+        rotation={[Math.PI / 2, 0, -0.35]}
+        castShadow
         geometry={sharedGeometries.arm}
       >
-        <meshStandardMaterial color={dollColor} roughness={0.6} metalness={0.0} />
+        <meshStandardMaterial color={dollColor} roughness={0.25} metalness={0.05} />
       </mesh>
+      <mesh
+        position={[0.19 * SIZE_MULTIPLIER, bodyHeight * SIZE_MULTIPLIER * 0.52, 0.2 * SIZE_MULTIPLIER]}
+        castShadow
+        geometry={sharedGeometries.hand}
+        material={sharedMaterials.skin}
+      />
 
-      {/* Piernas estilo Playmobil: delgadas, cortas y conectadas al cuerpo */}
-      {/* Las piernas tienen longitud 0.15 * SIZE_MULTIPLIER = 0.225 */}
-      {/* Su centro está en Y = -0.1125 (mitad de 0.225) para que:
-           - Parte superior: Y = 0 (conectada al cuerpo)
-           - Parte inferior: Y = -0.225 (ligeramente debajo de la mesa, estilo Playmobil) */}
+      {/* Piernas + zapatos */}
       <mesh position={[-0.08 * SIZE_MULTIPLIER, -0.075 * SIZE_MULTIPLIER, 0]} castShadow geometry={sharedGeometries.leg}>
-        <meshStandardMaterial color={dollColor} roughness={0.6} metalness={0.0} />
+        <meshStandardMaterial color={dollColor} roughness={0.25} metalness={0.05} />
+      </mesh>
+      <mesh position={[-0.08 * SIZE_MULTIPLIER, -0.19 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.shoe}>
+        <meshStandardMaterial color={dollColor.clone().multiplyScalar(0.6)} roughness={0.3} metalness={0.05} />
       </mesh>
       <mesh position={[0.08 * SIZE_MULTIPLIER, -0.075 * SIZE_MULTIPLIER, 0]} castShadow geometry={sharedGeometries.leg}>
-        <meshStandardMaterial color={dollColor} roughness={0.6} metalness={0.0} />
+        <meshStandardMaterial color={dollColor} roughness={0.25} metalness={0.05} />
+      </mesh>
+      <mesh position={[0.08 * SIZE_MULTIPLIER, -0.19 * SIZE_MULTIPLIER, 0.01 * SIZE_MULTIPLIER]} castShadow geometry={sharedGeometries.shoe}>
+        <meshStandardMaterial color={dollColor.clone().multiplyScalar(0.6)} roughness={0.3} metalness={0.05} />
       </mesh>
 
       {/* Direction indicator - Flecha en el cuerpo que indica la dirección de caminar (coincide con rotación del cuerpo) */}
@@ -579,6 +621,7 @@ export default memo(Doll3DComponent, (prevProps, nextProps) => {
     prevProps.doll.rotation[1] === nextProps.doll.rotation[1] &&
     prevProps.doll.rotation[2] === nextProps.doll.rotation[2] &&
     prevProps.doll.label === nextProps.doll.label &&
+    prevProps.doll.emotion === nextProps.doll.emotion &&
     prevProps.isPlaced === nextProps.isPlaced
   );
 });

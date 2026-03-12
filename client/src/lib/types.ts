@@ -51,32 +51,34 @@ export interface SavedConfiguration {
 }
 
 export const DOLL_TYPES: DollType[] = [
-  // Children and Adolescents - Only these can be selected in therapy
-  { id: 'baby-boy', name: 'Bebé (niño)', color: '#93C5FD', description: 'Bebé varón (0-2 años)', category: 'child' },
-  { id: 'baby-girl', name: 'Bebé (niña)', color: '#FBBF24', description: 'Bebé niña (0-2 años)', category: 'child' },
-  
-  // Deceased babies - important for systemic dynamics
-  { id: 'deceased-baby-boy', name: 'Bebé Fallecido (niño)', color: '#6B7280', description: 'Bebé varón fallecido (aborto/óbito)', category: 'deceased' },
-  { id: 'deceased-baby-girl', name: 'Bebé Fallecido (niña)', color: '#9CA3AF', description: 'Bebé niña fallecida (aborto/óbito)', category: 'deceased' },
-  { id: 'deceased-baby-unknown', name: 'Bebé Fallecido (desconocido)', color: '#D1D5DB', description: 'Bebé fallecido de sexo desconocido', category: 'deceased' },
+  // Bebés
+  { id: 'baby-boy', name: 'Bebé (niño)', color: '#7CB9E8', description: 'Bebé varón (0-2 años)', category: 'child' },
+  { id: 'baby-girl', name: 'Bebé (niña)', color: '#F9A8D4', description: 'Bebé niña (0-2 años)', category: 'child' },
+
+  // Bebés fallecidos - tonos apagados y translúcidos
+  { id: 'deceased-baby-boy', name: 'Bebé Fallecido (niño)', color: '#94A3B8', description: 'Bebé varón fallecido (aborto/óbito)', category: 'deceased' },
+  { id: 'deceased-baby-girl', name: 'Bebé Fallecido (niña)', color: '#C4B5A0', description: 'Bebé niña fallecida (aborto/óbito)', category: 'deceased' },
+  { id: 'deceased-baby-unknown', name: 'Bebé Fallecido (desconocido)', color: '#D6D3D1', description: 'Bebé fallecido de sexo desconocido', category: 'deceased' },
+
+  // Niños y adolescentes
   { id: 'child-boy', name: 'Niño', color: '#3B82F6', description: 'Niño pequeño (3-8 años)', category: 'child' },
   { id: 'child-girl', name: 'Niña', color: '#EC4899', description: 'Niña pequeña (3-8 años)', category: 'child' },
-  { id: 'teen-boy', name: 'Adolescente (chico)', color: '#1E40AF', description: 'Adolescente varón (9-17 años)', category: 'child' },
+  { id: 'teen-boy', name: 'Adolescente (chico)', color: '#2563EB', description: 'Adolescente varón (9-17 años)', category: 'child' },
   { id: 'teen-girl', name: 'Adolescente (chica)', color: '#DB2777', description: 'Adolescente mujer (9-17 años)', category: 'child' },
-  
-  // Adults - Parents generation
-  { id: 'father', name: 'Padre', color: '#1F2937', description: 'Figura paterna', category: 'father' },
-  { id: 'mother', name: 'Madre', color: '#7C2D12', description: 'Figura materna', category: 'mother' },
-  { id: 'stepfather', name: 'Padrastro', color: '#374151', description: 'Padrastro o figura paterna sustituta', category: 'father' },
-  { id: 'stepmother', name: 'Madrastra', color: '#92400E', description: 'Madrastra o figura materna sustituta', category: 'mother' },
-  
-  // Grandparents generation
-  { id: 'grandfather-paternal', name: 'Abuelo Paterno', color: '#4B5563', description: 'Padre del padre', category: 'grandfather' },
-  { id: 'grandmother-paternal', name: 'Abuela Paterna', color: '#6B7280', description: 'Madre del padre', category: 'grandmother' },
-  { id: 'grandfather-maternal', name: 'Abuelo Materno', color: '#374151', description: 'Padre de la madre', category: 'grandfather' },
-  { id: 'grandmother-maternal', name: 'Abuela Materna', color: '#9CA3AF', description: 'Madre de la madre', category: 'grandmother' },
-  
-  // Adult children (sons and daughters)
+
+  // Padres - colores saturados y distinguibles
+  { id: 'father', name: 'Padre', color: '#1E3A5F', description: 'Figura paterna', category: 'father' },
+  { id: 'mother', name: 'Madre', color: '#9F1239', description: 'Figura materna', category: 'mother' },
+  { id: 'stepfather', name: 'Padrastro', color: '#0F766E', description: 'Padrastro o figura paterna sustituta', category: 'father' },
+  { id: 'stepmother', name: 'Madrastra', color: '#A21CAF', description: 'Madrastra o figura materna sustituta', category: 'mother' },
+
+  // Abuelos - tonos más cálidos y claros que los padres
+  { id: 'grandfather-paternal', name: 'Abuelo Paterno', color: '#78716C', description: 'Padre del padre', category: 'grandfather' },
+  { id: 'grandmother-paternal', name: 'Abuela Paterna', color: '#A16207', description: 'Madre del padre', category: 'grandmother' },
+  { id: 'grandfather-maternal', name: 'Abuelo Materno', color: '#57534E', description: 'Padre de la madre', category: 'grandfather' },
+  { id: 'grandmother-maternal', name: 'Abuela Materna', color: '#B45309', description: 'Madre de la madre', category: 'grandmother' },
+
+  // Hijos adultos
   { id: 'son-adult', name: 'Hijo (adulto)', color: '#059669', description: 'Hijo varón adulto', category: 'child' },
   { id: 'daughter-adult', name: 'Hija (adulta)', color: '#10B981', description: 'Hija mujer adulta', category: 'child' },
   
